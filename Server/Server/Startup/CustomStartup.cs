@@ -1,6 +1,7 @@
 ﻿using System;
 using App.Metrics.Health;
 using AspNetCore.ApplicationBlocks;
+using GraphiQl;
 using HotChocolate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -73,6 +74,8 @@ namespace Server.Startup
                     c.RegisterServiceProvider(container);
                 })
             );
+
+            services.AddCors();
         }
 
         // This method gets called by the WebHostBuilder after all IStartupFilters have been executed.
@@ -81,6 +84,16 @@ namespace Server.Startup
         public void Configure(IApplicationBuilder builder, Container container)
         {
             System.Console.WriteLine($"APPINIT (8): {nameof(CustomStartup.Configure)}");
+
+            builder.UseCors(corsBuilder =>
+                corsBuilder
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+            );
+
+            builder.UseGraphQL();
+            builder.UseGraphiQl();
 
             container.Verify();
 

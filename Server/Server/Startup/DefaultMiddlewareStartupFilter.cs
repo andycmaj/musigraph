@@ -38,9 +38,6 @@ namespace Server.Startup
                         useAuthentication: false
                     );
 
-                    builder.UseGraphQL();
-                    builder.UseGraphiQl();
-
                     next(builder);
                 };
         }

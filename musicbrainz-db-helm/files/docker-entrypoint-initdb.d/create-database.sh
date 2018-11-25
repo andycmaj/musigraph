@@ -52,6 +52,10 @@ wget https://raw.githubusercontent.com/metabrainz/musicbrainz-server/master/admi
 psql -h localhost -d musicbrainz -U $POSTGRESQL_USERNAME -a -f CreatePrimaryKeys.sql
 rm CreatePrimaryKeys.sql
 
+wget https://gist.githubusercontent.com/andycmaj/98160391ac82d4d75ded2947c4f59782/raw/46085c1b295222c59fa7773d93c24e4ed16b942d/musicbrainz_CreateFKConstraints.sql
+psql -h localhost -d musicbrainz -U $POSTGRESQL_USERNAME -a -f musicbrainz_CreateFKConstraints.sql
+rm musicbrainz_CreateFKConstraints.sql
+
 wget https://raw.githubusercontent.com/metabrainz/musicbrainz-server/master/admin/sql/CreateIndexes.sql
 psql -h localhost -d musicbrainz -U $POSTGRESQL_USERNAME -a -f CreateIndexes.sql
 rm CreateIndexes.sql

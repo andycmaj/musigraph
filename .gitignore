@@ -292,3 +292,4 @@ __pycache__/
 .vs/
 .build/*/
 .drop/
+.next/
