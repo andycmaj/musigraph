@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "api.fullname" . }}-config
+  labels:
+{{ include "api.standardLabels" . | indent 4 }}
+data:
+  ASPNETCORE_ENVIRONMENT: {{ default .Values.application.environment .Values.global.application.environment }}
+  APPLICATION__VERSION: {{ .Values.application.version }}

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="DiscogsClient" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Condition="$(Configuration) == 'Debug'" Include="../../../github/andycmaj/AspNetCore.ApplicationBlocks/src/AspNetCore.ApplicationBlocks.FrontEnd/AspNetCore.ApplicationBlocks.FrontEnd.csproj" />
+    <PackageReference Condition="$(Configuration) == 'Release'" Include="AspNetCore.ApplicationBlocks.FrontEnd" Version="1.0.0" />
+  </ItemGroup>
+</Project>
