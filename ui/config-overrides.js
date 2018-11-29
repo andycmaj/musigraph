@@ -1,7 +1,11 @@
 const rewireReactHotLoader = require('react-app-rewire-hot-loader');
+const { compose, injectBabelPlugin } = require('react-app-rewired');
 
-/* config-overrides.js */
-module.exports = function override(config, env) {
-  config = rewireReactHotLoader(config, env);
-  return config;
-};
+const createRewire = (plugin) => (config, env) =>
+  injectBabelPlugin(plugin, config);
+
+module.exports = compose(
+  rewireReactHotLoader,
+  createRewire('@quickbaseoss/babel-plugin-styled-components-css-namespace'),
+  createRewire('styled-components')
+);

@@ -1,16 +1,11 @@
 import React from 'react';
-import ArtistSearch from './components/ArtistSearch';
-import MusiGraph from './components/MusiGraph-d3';
-import { createGlobalStyle } from 'styled-components';
-
-const GlobalStyle = createGlobalStyle`
-`;
+import Search from './components/Search';
+import MusiCrumbs from './components/MusiCrumbs';
 
 const App = () => (
   <div>
-    <ArtistSearch />
-    <MusiGraph />
-    <GlobalStyle />
+    <Search />
+    <MusiCrumbs />
   </div>
 );
 

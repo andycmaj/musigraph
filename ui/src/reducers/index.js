@@ -2,9 +2,9 @@ import { combineReducers } from 'redux';
 import fetchReducer from './fetchReducer';
 import { SEARCH } from '../actions/search';
 
-import graph from './graph';
+import path from './path';
 
 export default combineReducers({
   search: fetchReducer(SEARCH, { loading: false, data: [] }),
-  graph
+  path
 });

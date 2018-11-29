@@ -9,10 +9,10 @@ const fetchReducer = (apiName, defaultState = fetchReducerDefaultState) => {
   return (state = defaultState, { type, payload, meta, error }) => {
     switch (type) {
       case actionTypes.request.type:
-        return { ...state, ...payload, error, loading: !error };
+        return { ...state, data: payload, error, loading: !error };
 
       case actionTypes.success.type:
-        return { ...state, ...payload, loading: false };
+        return { ...state, data: payload, loading: false };
 
       case actionTypes.failure.type:
         return { ...state, error: payload, loading: false };

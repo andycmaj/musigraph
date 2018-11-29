@@ -34,7 +34,8 @@ namespace Api.Commands
                 return await results
                     .Select(result => new Artist {
                         Id = result.id,
-                        Name = result.title
+                        Name = result.title,
+                        ThumbnailUrl = result.thumb
                     })
                     .ToList();
             }

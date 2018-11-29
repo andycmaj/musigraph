@@ -10,5 +10,7 @@ namespace Api.Models
         public string Role { get; set; }
         public IReadOnlyList<Release> PerformsOn { get; set; }
         public IReadOnlyList<INode> AdjacentNodes => PerformsOn;
+        public string ThumbnailUrl { get; set; }
+        public string InfoUrl => $"https://www.discogs.com/artist/{Id}";
     }
 }

@@ -5,16 +5,20 @@ using AspNetCore.ApplicationBlocks.Commands;
 using DiscogsClient;
 using Api.Models;
 using System;
+using MoreLinq;
 
 namespace Api.Commands
 {
-    public class GetAdjacentNodesCommand : IFunction<IReadOnlyList<INode>>
+    public class GetAdjacentNodesCommand : IFunction<AdjacentNodesResult>
     {
+        // TODO: paging
+        private const int MaxResults = 100;
+
         public int NodeId { get; set; }
         public NodeType NodeType { get; set; }
 
         public class GetAdjacentNodesCommandHandler
-            : IFunctionHandlerAsync<GetAdjacentNodesCommand, IReadOnlyList<INode>>
+            : IFunctionHandlerAsync<GetAdjacentNodesCommand, AdjacentNodesResult>
         {
             private readonly IDiscogsDataBaseClient discogsClient;
 
@@ -23,7 +27,7 @@ namespace Api.Commands
                 this.discogsClient = discogsClient;
             }
 
-            public async Task<IReadOnlyList<INode>> ExecuteAsync(GetAdjacentNodesCommand command)
+            public async Task<AdjacentNodesResult> ExecuteAsync(GetAdjacentNodesCommand command)
             {
                 switch (command.NodeType)
                 {
@@ -36,35 +40,56 @@ namespace Api.Commands
                 }
             }
 
-            private async Task<IReadOnlyList<INode>> GetAdjacentReleases(int artistId)
+            private async Task<AdjacentNodesResult> GetAdjacentReleases(int artistId)
             {
-                var releases = discogsClient
-                    .GetArtistReleaseAsEnumerable(artistId)
-                    .ToAsyncEnumerable();
+                var artist = await discogsClient.GetArtistAsync(artistId);
 
-                return await releases
+                var releases = await discogsClient
+                    .GetArtistReleaseAsEnumerable(artistId, max: MaxResults)
+                    .ToAsyncEnumerable()
                     .Select(release => new Release {
                         Name = release.title,
                         MainArtist = release.artist,
-                        Id = release.id
+                        ThumbnailUrl = release.thumb,
+                        Id = release.type == "master"
+                            ? release.main_release
+                            : release.id
                     })
                     .ToList();
+
+                return new AdjacentNodesResult {
+                    Source = new Artist {
+                        Id = artist.id,
+                        Name = artist.name
+                    },
+                    Nodes = releases
+                };
             }
 
-            private async Task<IReadOnlyList<INode>> GetAdjacentArtists(int releaseId)
+            private async Task<AdjacentNodesResult> GetAdjacentArtists(int releaseId)
             {
                 var release = await discogsClient
                     .GetReleaseAsync(releaseId);
 
-                return release
+                var artists = release
                     .artists
                     .Concat(release.extraartists)
+                    .Take(MaxResults)
+                    .DistinctBy(artist => artist.id)
                     .Select(artist => new Artist {
                         Name = artist.name,
                         Id = artist.id,
-                        Role = artist.role
+                        Role = artist.role,
                     })
                     .ToList();
+
+                return new AdjacentNodesResult {
+                    Source = new Release {
+                        Id = release.id,
+                        Name = release.title
+                    },
+                    Nodes = artists
+                };
             }
         }
     }

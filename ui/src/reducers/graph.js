@@ -7,7 +7,7 @@ import fetchReducer from './fetchReducer';
 const defaultState = {
   loading: false,
   originNode: null,
-  data: {
+  graphData: {
     nodes: [],
     links: [],
   },
@@ -29,6 +29,7 @@ const addNewLinks = (existingLinks, sourceNode, newNodes) => {
   const newLinks = newNodes.map(node => ({
     source: sourceNode.id,
     target: node.id,
+    isHidden: true
   }));
   return uniqBy(props(['source', 'target']))(concat(existingLinks, newLinks));
 };
@@ -38,7 +39,7 @@ const graphReducer = (state = defaultState, { type, payload, error }) => {
     case getAdjacentNodeActions.success.type:
       return {
         ...state,
-        data: {
+        graphData: {
           nodes: addNewNodes(state.data.nodes, payload.adjacentNodes),
           links: addNewLinks(
             state.data.links,
