@@ -5,5 +5,5 @@ metadata:
   labels:
 {{ include "api.standardLabels" . | indent 4 }}
 data:
-  ASPNETCORE_ENVIRONMENT: {{ default .Values.application.environment .Values.global.application.environment }}
+  ASPNETCORE_ENVIRONMENT: {{ .Values.application.environment }}
   APPLICATION__VERSION: {{ .Values.application.version }}
