@@ -28,6 +28,10 @@ const Value = ({ data, children, ...props }) => (
   </components.SingleValue>
 );
 
+const SelectContainer = styled(components.SelectContainer)`
+  z-index: 100;
+`;
+
 const Search = ({
   search: { loading, error, data },
   handleInputChange,
@@ -38,6 +42,7 @@ const Search = ({
     components={{
       Option: WithSmallThumbnail(Option),
       SingleValue: WithSmallThumbnail(Value),
+      SelectContainer
     }}
     filterOption={() => true}
     options={data}
@@ -46,6 +51,7 @@ const Search = ({
     getOptionLabel={node => node.name}
     getOptionValue={node => node.id}
     closeMenuOnSelect={true}
+    isClearable={true}
   />
 );
 

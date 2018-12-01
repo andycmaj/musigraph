@@ -5,6 +5,8 @@ import Select, { components } from 'react-select';
 import { changeNodeValue } from '../actions/path';
 import styled, { css } from 'styled-components';
 import RightArrow from '@material-ui/icons/ArrowRightAlt';
+import ReleaseIcon from '@material-ui/icons/Album';
+import ArtistIcon from '@material-ui/icons/Person';
 
 const sizes = {
   phone: 500,
@@ -26,6 +28,8 @@ const CrumbSeparator = styled(RightArrow)`
 
   ${media.phone`
     transform: rotate(90deg);
+    min-height: 0;
+    margin: 0;
   `};
 `;
 
@@ -38,10 +42,10 @@ const CrumbsContainer = styled.div`
 
 const SelectContainer = styled(components.SelectContainer)`
   margin: 25px;
-  width: 33%;
+  width: 25%;
 
   ${media.phone`
-    margin: 25px 0;
+    margin: 0;
     width: 100%;
   `};
 `;
@@ -51,6 +55,7 @@ const SingleValue = ({ data, children, ...props }) => (
     <a target="_blank" href={data.infoUrl}>
       {children}
     </a>
+    {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
   </components.SingleValue>
 );
 
