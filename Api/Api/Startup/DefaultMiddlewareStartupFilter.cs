@@ -35,8 +35,8 @@ namespace Api.Startup
                             .WithOrigins(
                                 "http://localhost:3000",
                                 "https://5c02fcb0b312746073d1b154--musinav.netlify.com",
-                                "https://musinav.com",
-                                "https://*.musinav.com"
+                                "https://musigraph.app",
+                                "https://*.musigraph.app"
                             )
                             .AllowAnyHeader()
                             .AllowAnyMethod()
