@@ -6,31 +6,32 @@ import debounceHandler from '@hocs/debounce-handler';
 import { doSearch } from '../actions/search';
 import { resetPath } from '../actions/path';
 import styled from 'styled-components';
+import StyledItemWithThumbnail from './StyledItemWithThumbnail';
+
+const customStyles = {
+  valueContainer: (provided) => ({
+    ...provided,
+    height: '50px',
+  }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 100
+  })
+};
 
 const Option = ({ data, children, ...props }) => (
   <components.Option {...props}>
-    {children}
-    <img alt={data.name} src={data.thumbnailUrl} />
+    <img alt="" src={data.thumbnailUrl} />
+    <span>{children}</span>
   </components.Option>
 );
 
-const WithSmallThumbnail = component => styled(component)`
-  img {
-    height: 20px;
-    width: 20px;
-  }
-`;
-
 const Value = ({ data, children, ...props }) => (
   <components.SingleValue {...props}>
-    {children}
     <img alt={data.name} src={data.thumbnailUrl} />
+    <span>{children}</span>
   </components.SingleValue>
 );
-
-const SelectContainer = styled(components.SelectContainer)`
-  z-index: 100;
-`;
 
 const Search = ({
   search: { loading, error, data },
@@ -38,11 +39,11 @@ const Search = ({
   handleChange,
 }) => (
   <Select
+    styles={customStyles}
     isLoading={loading}
     components={{
-      Option: WithSmallThumbnail(Option),
-      SingleValue: WithSmallThumbnail(Value),
-      SelectContainer
+      Option: StyledItemWithThumbnail(Option),
+      SingleValue: StyledItemWithThumbnail(Value),
     }}
     filterOption={() => true}
     options={data}

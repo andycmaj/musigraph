@@ -7,6 +7,7 @@ import styled, { css } from 'styled-components';
 import RightArrow from '@material-ui/icons/ArrowRightAlt';
 import ReleaseIcon from '@material-ui/icons/Album';
 import ArtistIcon from '@material-ui/icons/Person';
+import StyledItemWithThumbnail from './StyledItemWithThumbnail';
 
 const sizes = {
   phone: 500,
@@ -21,6 +22,17 @@ const media = Object.keys(sizes).reduce((acc, label) => {
   `;
   return acc;
 }, {});
+
+const customStyles = {
+  valueContainer: provided => ({
+    ...provided,
+    height: '50px',
+  }),
+  control: provided => ({
+    ...provided,
+    border: 'none',
+  }),
+};
 
 const CrumbSeparator = styled(RightArrow)`
   margin: 25px 0;
@@ -37,7 +49,7 @@ const CrumbsContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
   padding: 25px;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 const SelectContainer = styled(components.SelectContainer)`
@@ -50,18 +62,14 @@ const SelectContainer = styled(components.SelectContainer)`
   `};
 `;
 
-const SingleValue = ({ data, children, ...props }) => (
+const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
+    {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
     <a target="_blank" href={data.infoUrl}>
       {children}
     </a>
-    {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
   </components.SingleValue>
-);
-
-const Control = styled(components.Control)`
-  border: none;
-`;
+));
 
 const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
   <div>
@@ -79,6 +87,7 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
           return (
             <>
               <Select
+                styles={customStyles}
                 placeholder={
                   source.type === 'Artist'
                     ? `${source.name}'s Releases...`
@@ -89,7 +98,7 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
                 isLoading={loading}
                 key={`${source.type}_${source.id}`}
                 options={nodes}
-                components={{ SelectContainer, SingleValue, Control }}
+                components={{ SelectContainer, SingleValue }}
                 filterOption={() => true}
                 getOptionLabel={node => node.name}
                 getOptionValue={node => node}
