@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withHandlers } from 'recompose';
+import { compose, withHandlers, withState } from 'recompose';
 import { connect } from 'react-redux';
 import Select, { components } from 'react-select';
 import { changeNodeValue } from '../actions/path';
@@ -32,6 +32,9 @@ const customStyles = {
     ...provided,
     border: 'none',
   }),
+  menuList: provided => ({
+    ...provided,
+  }),
 };
 
 const CrumbSeparator = styled(RightArrow)`
@@ -41,7 +44,7 @@ const CrumbSeparator = styled(RightArrow)`
   ${media.phone`
     transform: rotate(90deg);
     min-height: 0;
-    margin: 0;
+    margin: 0 50px;
   `};
 `;
 
@@ -71,9 +74,16 @@ const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   </components.SingleValue>
 ));
 
-const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
+const Crumbs = ({
+  path: { initialCrumbLoading, crumbs },
+  createNodeChangeHandler,
+  activeCrumbIndex,
+  setActiveCrumbIndex,
+}) => (
   <div>
-    {!!crumbs.length ? (
+    {initialCrumbLoading ? (
+      <p>Loading...      {/* TODO better loading indicator/empty message */}</p>
+    ) : !!crumbs.length ? (
       <CrumbsContainer>
         {crumbs.map((crumb, index) => {
           const { source, nodes, loading } = crumb;
@@ -82,10 +92,14 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
 
           // we only wanna specify menuIsOpen for the LAST crumb, rest of crumbs should not have this prop at all.
           // otherwise, value of this prop will lock Select open or closed
-          const additionalProps = isLastCrumb ? { menuIsOpen: true } : null;
+          const additionalProps = null;
+            // (activeCrumbIndex === -1 && isLastCrumb) ||
+            // index === activeCrumbIndex
+            //   ? { menuIsOpen: true }
+            //   : { menuIsOpen: false };
 
           return (
-            <>
+            <React.Fragment key={`${source.type}_${source.id}`}>
               <Select
                 styles={customStyles}
                 placeholder={
@@ -94,9 +108,10 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
                     : `Artists on ${source.name}...`
                 }
                 {...additionalProps}
+                maxMenuHeight={500}
+                closeMenuOnScroll={true}
                 isSearchable={false}
                 isLoading={loading}
-                key={`${source.type}_${source.id}`}
                 options={nodes}
                 components={{ SelectContainer, SingleValue }}
                 filterOption={() => true}
@@ -104,9 +119,10 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
                 getOptionValue={node => node}
                 closeMenuOnSelect={true}
                 onChange={createNodeChangeHandler(crumb)}
+                onMenuOpen={() => setActiveCrumbIndex(index)}
               />
               {!isLastCrumb ? <CrumbSeparator /> : null}
-            </>
+            </React.Fragment>
           );
         })}
       </CrumbsContainer>
@@ -116,7 +132,9 @@ const Crumbs = ({ path: { crumbs }, createNodeChangeHandler }) => (
   </div>
 );
 
-const mapStateToProps = ({ path }) => ({ path });
+const mapStateToProps = ({ path }) => ({
+  path,
+});
 const mapDispatchToProps = { changeNodeValue };
 
 export default compose(
@@ -124,10 +142,12 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps
   ),
+  withState('activeCrumbIndex', 'setActiveCrumbIndex', -1),
   withHandlers({
     createNodeChangeHandler: props => crumb => (value, { action }) => {
       if (action === 'select-option') {
         props.changeNodeValue(crumb, value);
+        props.setActiveCrumbIndex(-1);
       }
     },
   })

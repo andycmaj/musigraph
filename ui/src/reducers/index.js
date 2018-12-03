@@ -5,6 +5,6 @@ import { SEARCH } from '../actions/search';
 import path from './path';
 
 export default combineReducers({
-  search: fetchReducer(SEARCH, { loading: false, data: [] }),
+  search: fetchReducer(SEARCH, { data: [] }),
   path
 });

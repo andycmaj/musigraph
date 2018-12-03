@@ -17,6 +17,7 @@
     "react-d3-graph": "2.0.0-rc2",
     "react-dom": "16.6.3",
     "react-hot-loader": "4.3.12",
+    "react-long": "^1.1.5",
     "react-redux": "5.1.1",
     "react-select": "^2.1.2",
     "recompose": "0.30.0",
@@ -38,7 +39,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-scripts build",
+    "build": "REACT_APP_API_URL=https://api.musigraph.app/api/v1 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
