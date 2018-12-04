@@ -1,10 +1,5 @@
 version: 2
 
-machine:
-  environment:
-    SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
-    GITREV: ${CIRCLE_SHA1:0:6}
-
 jobs:
   build_api_image:
     docker:
@@ -17,8 +12,8 @@ jobs:
           name: build and push docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t andycunn/musigraph-api:$SHORT_GIT_HASH ./Api/src/Api
-            docker push andycunn/musigraph-api:$SHORT_GIT_HASH
+            docker build -t andycunn/musigraph-api:$CIRCLE_SHA1 ./Api/src/Api
+            docker push andycunn/musigraph-api:$CIRCLE_SHA1
   deploy_api:
     docker:
       - image: andycunn/helm-deploy:latest
@@ -28,7 +23,7 @@ jobs:
           name: deploy helm release
           command: |
             helm tiller run -- helm upgrade musigraph-prod --install ./chart --namespace musigraph \
-              --set application.version=$SHORT_GIT_HASH \
+              --set application.version=$CIRCLE_SHA1 \
               --set application.environment=production
 
 workflows:
