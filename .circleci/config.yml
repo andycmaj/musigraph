@@ -45,7 +45,7 @@ workflows:
             branches:
               only: master
       - deploy_api:
-          context: dotnet
+          context: kubernetes
           filters:
             branches:
               only: master
