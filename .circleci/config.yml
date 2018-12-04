@@ -6,9 +6,9 @@ machine:
     GITREV: ${CIRCLE_SHA1:0:6}
 
 jobs:
-  deploy_api:
+  build_api_image:
     docker:
-      - image: andycunn/helm-deploy:latest
+      - image: docker:18.06.1-ce-git
     steps:
       - checkout
       - setup_remote_docker:
@@ -19,6 +19,11 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker build -t andycunn/musigraph-api:$GITREV ./Api/src/Api
             docker push andycunn/musigraph-api:$GITREV
+  deploy_api:
+    docker:
+      - image: andycunn/helm-deploy:latest
+    steps:
+      - checkout
       - run:
           name: deploy helm release
           command: |
@@ -30,6 +35,11 @@ workflows:
   version: 2
   deploy:
     jobs:
+      - build_api_image:
+          context: dotnet
+          filters:
+            branches:
+              only: master
       - deploy_api:
           context: dotnet
           filters:
