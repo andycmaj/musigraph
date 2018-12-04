@@ -1,0 +1,37 @@
+version: 2
+
+machine:
+  environment:
+    SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
+    GITREV: ${CIRCLE_SHA1:0:6}
+
+jobs:
+  deploy_api:
+    docker:
+      - image: andycunn/helm-deploy:latest
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: build and push docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -t andycunn/musigraph-api:$GITREV ./Api/src/Api
+            docker push andycunn/musigraph-api:$GITREV
+      - run:
+          name: deploy helm release
+          command: |
+            helm tiller run -- helm upgrade musigraph-prod --install ./chart --namespace musigraph \
+              --set application.version=$GITREV \
+              --set application.environment=production
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy_api:
+          context: dotnet
+          filters:
+            branches:
+              only: master
