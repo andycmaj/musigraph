@@ -20,6 +20,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: configure kubectl with gcloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project andy-sandbox
+            gcloud --quiet config set compute/zone us-west1-a
+            gcloud --quiet container clusters get-credentials dev
+      - run:
           name: deploy helm release
           command: |
             helm tiller run -- helm upgrade musigraph-prod --install ./Api/infrastructure/chart \
