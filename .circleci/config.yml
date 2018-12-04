@@ -22,7 +22,8 @@ jobs:
       - run:
           name: deploy helm release
           command: |
-            helm tiller run -- helm upgrade musigraph-prod --install ./chart --namespace musigraph \
+            helm tiller run -- helm upgrade musigraph-prod --install ./Api/infrastructure/chart \
+              --namespace musigraph \
               --set application.version=$CIRCLE_SHA1 \
               --set application.environment=production
 
