@@ -60,6 +60,10 @@ const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   </components.SingleValue>
 ));
 
+const hidden = _ => ({
+  display: 'none'
+});
+
 const Crumbs = ({
   path: { initialCrumbLoading, crumbs },
   createNodeChangeHandler,
@@ -89,9 +93,8 @@ const Crumbs = ({
               <React.Fragment key={`${source.type}_${source.id}`}>
                 <Select
                   styles={{
-                    indicatorsContainer: _ => ({
-                      display: 'none',
-                    }),
+                    dropdownIndicator: hidden,
+                    indicatorSeparator: hidden,
                     valueContainer: provided => ({
                       ...provided,
                       height: '50px',

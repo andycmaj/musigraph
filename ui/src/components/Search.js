@@ -24,6 +24,10 @@ const Value = ({ data, children, ...props }) => (
 
 const searchTypes = ['artist', 'release'];
 
+const hidden = _ => ({
+  display: 'none'
+});
+
 const Search = ({
   search: { selectedResult, loading, error, data },
   handleInputChange,
@@ -39,9 +43,8 @@ const Search = ({
     />
     <Select
       styles={{
-        indicatorsContainer: _ => ({
-          display: 'none'
-        }),
+        dropdownIndicator: hidden,
+        indicatorSeparator: hidden,
         valueContainer: provided => ({
           ...provided,
           height: '50px',
