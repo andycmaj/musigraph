@@ -39,6 +39,9 @@ const Search = ({
     />
     <Select
       styles={{
+        indicatorsContainer: _ => ({
+          display: 'none'
+        }),
         valueContainer: provided => ({
           ...provided,
           height: '50px',
