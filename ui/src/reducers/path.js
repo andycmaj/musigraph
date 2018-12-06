@@ -1,13 +1,6 @@
 import { createApiActionTypes } from '../actions/createApiActions';
 import { whereEq, findIndex, omit } from 'ramda';
-import { RESET_PATH, CHANGE_NODE_VALUE, resetPath } from '../actions/path';
-
-/*
-Node
-  source: Node
-  currentValue: Node
-  options: Node[]
-*/
+import { RESET_PATH, CLEAR_PATH, CHANGE_NODE_VALUE } from '../actions/path';
 
 const defaultState = {
   crumbs: [],
@@ -46,6 +39,11 @@ const toggleCrumbLoading = (crumbs, changedCrumb, loading) =>
 
 const crumbsReducer = (state = defaultState, { type, payload, error }) => {
   switch (type) {
+    case CLEAR_PATH:
+      return {
+        ...state,
+        crumbs: [],
+      };
     case resetPathRequest:
       return {
         ...state,

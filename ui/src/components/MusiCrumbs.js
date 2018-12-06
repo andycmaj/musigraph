@@ -9,33 +9,19 @@ import ReleaseIcon from '@material-ui/icons/Album';
 import ArtistIcon from '@material-ui/icons/Person';
 import StyledItemWithThumbnail from './StyledItemWithThumbnail';
 
-const sizes = {
+const screenWidths = {
   phone: 500,
 };
 
 // https://www.styled-components.com/docs/advanced#media-templates
-const media = Object.keys(sizes).reduce((acc, label) => {
+const media = Object.keys(screenWidths).reduce((acc, label) => {
   acc[label] = (...args) => css`
-    @media (max-width: ${sizes[label]}px) {
+    @media (max-width: ${screenWidths[label]}px) {
       ${css(...args)};
     }
   `;
   return acc;
 }, {});
-
-const customStyles = {
-  valueContainer: provided => ({
-    ...provided,
-    height: '50px',
-  }),
-  control: provided => ({
-    ...provided,
-    border: 'none',
-  }),
-  menuList: provided => ({
-    ...provided,
-  }),
-};
 
 const CrumbSeparator = styled(RightArrow)`
   margin: 25px 0;
@@ -68,7 +54,7 @@ const SelectContainer = styled(components.SelectContainer)`
 const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
     {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
-    <a target="_blank" href={data.infoUrl}>
+    <a target="_blank" rel="noopener noreferrer" href={data.infoUrl}>
       {children}
     </a>
   </components.SingleValue>
@@ -82,7 +68,7 @@ const Crumbs = ({
 }) => (
   <div>
     {initialCrumbLoading ? (
-      <p>Loading...      {/* TODO better loading indicator/empty message */}</p>
+      <p>Loading... {/* TODO better loading indicator/empty message */}</p>
     ) : !!crumbs.length ? (
       <CrumbsContainer>
         {crumbs.map((crumb, index) => {
@@ -93,15 +79,24 @@ const Crumbs = ({
           // we only wanna specify menuIsOpen for the LAST crumb, rest of crumbs should not have this prop at all.
           // otherwise, value of this prop will lock Select open or closed
           const additionalProps = null;
-            // (activeCrumbIndex === -1 && isLastCrumb) ||
-            // index === activeCrumbIndex
-            //   ? { menuIsOpen: true }
-            //   : { menuIsOpen: false };
+          // (activeCrumbIndex === -1 && isLastCrumb) ||
+          // index === activeCrumbIndex
+          //   ? { menuIsOpen: true }
+          //   : { menuIsOpen: false };
 
           return (
             <React.Fragment key={`${source.type}_${source.id}`}>
               <Select
-                styles={customStyles}
+                styles={{
+                  valueContainer: provided => ({
+                    ...provided,
+                    height: '50px',
+                  }),
+                  control: provided => ({
+                    ...provided,
+                    border: 'none',
+                  }),
+                }}
                 placeholder={
                   source.type === 'Artist'
                     ? `${source.name}'s Releases...`

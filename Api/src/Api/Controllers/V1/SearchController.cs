@@ -16,7 +16,7 @@ namespace Iqviate.Templates.FrontEnd.Controllers.V1
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] FindArtistCommand command)
+        public async Task<IActionResult> Get([FromQuery] FindNodeCommand command)
         {
             var result = await commandRouter.ExecuteFunctionAsync(command);
 

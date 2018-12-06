@@ -1,23 +1,12 @@
 import React from 'react';
-import { compose, withHandlers } from 'recompose';
+import { compose, withHandlers, withState } from 'recompose';
 import { connect } from 'react-redux';
 import Select, { components } from 'react-select';
 import debounceHandler from '@hocs/debounce-handler';
 import { doSearch } from '../actions/search';
-import { resetPath } from '../actions/path';
-import styled from 'styled-components';
+import { resetPath, clearPath } from '../actions/path';
 import StyledItemWithThumbnail from './StyledItemWithThumbnail';
-
-const customStyles = {
-  valueContainer: (provided) => ({
-    ...provided,
-    height: '50px',
-  }),
-  menu: (provided) => ({
-    ...provided,
-    zIndex: 100
-  })
-};
+import OptionButtonGroup from './OptionButtonGroup';
 
 const Option = ({ data, children, ...props }) => (
   <components.Option {...props}>
@@ -33,31 +22,53 @@ const Value = ({ data, children, ...props }) => (
   </components.SingleValue>
 );
 
+const searchTypes = ['artist', 'release'];
+
 const Search = ({
-  search: { loading, error, data },
+  search: { selectedResult, loading, error, data },
   handleInputChange,
   handleChange,
+  searchType,
+  handleSearchTypeChange,
 }) => (
-  <Select
-    styles={customStyles}
-    isLoading={loading}
-    components={{
-      Option: StyledItemWithThumbnail(Option),
-      SingleValue: StyledItemWithThumbnail(Value),
-    }}
-    filterOption={() => true}
-    options={data}
-    onChange={handleChange}
-    onInputChange={handleInputChange}
-    getOptionLabel={node => node.name}
-    getOptionValue={node => node.id}
-    closeMenuOnSelect={true}
-    isClearable={true}
-  />
+  <section>
+    <OptionButtonGroup
+      selectedValue={searchType}
+      onChange={handleSearchTypeChange}
+      values={searchTypes}
+    />
+    <Select
+      styles={{
+        valueContainer: provided => ({
+          ...provided,
+          height: '50px',
+        }),
+        menu: provided => ({
+          ...provided,
+          zIndex: 100,
+        }),
+      }}
+      value={selectedResult}
+      isLoading={loading}
+      components={{
+        Option: StyledItemWithThumbnail(Option),
+        SingleValue: StyledItemWithThumbnail(Value),
+      }}
+      filterOption={() => true}
+      options={data}
+      onChange={handleChange}
+      onInputChange={handleInputChange}
+      getOptionLabel={node => node.name}
+      getOptionValue={node => node.id}
+      closeMenuOnSelect={true}
+      isClearable={true}
+      placeholder={`Search ${searchType}s..`}
+    />
+  </section>
 );
 
 const mapStateToProps = ({ search }) => ({ search });
-const mapDispatchToProps = { doSearch, resetPath };
+const mapDispatchToProps = { doSearch, resetPath, clearPath };
 
 export default compose(
   connect(
@@ -65,6 +76,7 @@ export default compose(
     mapDispatchToProps
   ),
   debounceHandler('doSearch', 300),
+  withState('searchType', 'setSearchType', 'artist'),
   withHandlers({
     handleChange: props => (value, { action }) => {
       if (action === 'select-option') {
@@ -73,8 +85,12 @@ export default compose(
     },
     handleInputChange: props => (value, { action }) => {
       if (action === 'input-change') {
-        props.doSearch(value);
+        props.doSearch(props.searchType, value);
       }
     },
+    handleSearchTypeChange: props => (value) => {
+      props.setSearchType(value);
+      props.clearPath();
+    }
   })
 )(Search);

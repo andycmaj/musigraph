@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCore.ApplicationBlocks.Commands;
@@ -6,6 +5,7 @@ using DiscogsClient;
 using Api.Models;
 using System;
 using MoreLinq;
+using DiscogsClient.Data.Result;
 
 namespace Api.Commands
 {
@@ -71,8 +71,7 @@ namespace Api.Commands
                 var release = await discogsClient
                     .GetReleaseAsync(releaseId);
 
-                var artists = release
-                    .artists
+                var artists = (release.artists ?? new DiscogsReleaseArtist[0])
                     .Concat(release.extraartists)
                     .Take(MaxResults)
                     .DistinctBy(artist => artist.id)
