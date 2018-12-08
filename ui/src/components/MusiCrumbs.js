@@ -61,7 +61,7 @@ const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
 ));
 
 const hidden = _ => ({
-  display: 'none'
+  display: 'none',
 });
 
 const Crumbs = ({

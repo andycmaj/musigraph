@@ -16,4 +16,4 @@ image:
   pullPolicy: Always
 
 discogs:
-  apiToken: zIULkphvrIkPidoMnMLNUbiEESbBsiMOPbuvUiCK
+  apiToken: ''

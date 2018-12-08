@@ -10,7 +10,7 @@ namespace Api.Startup
         public void RegisterServices(Container container)
         {
             // Create authentication based on Discogs token
-            var tokenInformation = new TokenAuthenticationInformation("zIULkphvrIkPidoMnMLNUbiEESbBsiMOPbuvUiCK");
+            var tokenInformation = new TokenAuthenticationInformation("**");
             //Create discogs client using the authentication
             var discogsClient = new DiscogsClient.DiscogsClient(tokenInformation, "foo", 5000);
 
