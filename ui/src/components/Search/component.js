@@ -1,12 +1,7 @@
 import React from 'react';
-import { compose, withHandlers, withState } from 'recompose';
-import { connect } from 'react-redux';
 import Select, { components } from 'react-select';
-import debounceHandler from '@hocs/debounce-handler';
-import { doSearch } from '../actions/search';
-import { resetPath, clearPath } from '../actions/path';
-import StyledItemWithThumbnail from './StyledItemWithThumbnail';
-import OptionButtonGroup from './OptionButtonGroup';
+import StyledItemWithThumbnail from '../StyledItemWithThumbnail';
+import OptionButtonGroup from '../OptionButtonGroup';
 
 const Option = ({ data, children, ...props }) => (
   <components.Option {...props}>
@@ -25,10 +20,10 @@ const Value = ({ data, children, ...props }) => (
 const searchTypes = ['artist', 'release'];
 
 const hidden = _ => ({
-  display: 'none'
+  display: 'none',
 });
 
-const Search = ({
+export default ({
   search: { selectedResult, loading, error, data },
   handleInputChange,
   handleChange,
@@ -72,31 +67,3 @@ const Search = ({
     />
   </section>
 );
-
-const mapStateToProps = ({ search }) => ({ search });
-const mapDispatchToProps = { doSearch, resetPath, clearPath };
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  debounceHandler('doSearch', 300),
-  withState('searchType', 'setSearchType', 'artist'),
-  withHandlers({
-    handleChange: props => (value, { action }) => {
-      if (action === 'select-option') {
-        props.resetPath(value);
-      }
-    },
-    handleInputChange: props => (value, { action }) => {
-      if (action === 'input-change') {
-        props.doSearch(props.searchType, value);
-      }
-    },
-    handleSearchTypeChange: props => (value) => {
-      props.setSearchType(value);
-      props.clearPath();
-    }
-  })
-)(Search);

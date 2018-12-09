@@ -9,12 +9,13 @@ namespace Api.Startup
     {
         public void RegisterServices(Container container)
         {
-            // Create authentication based on Discogs token
-            var tokenInformation = new TokenAuthenticationInformation("**");
-            //Create discogs client using the authentication
-            var discogsClient = new DiscogsClient.DiscogsClient(tokenInformation, "foo", 5000);
-
-            container.RegisterInstance<IDiscogsDataBaseClient>(discogsClient);
+            container.RegisterSingleton<IDiscogsDataBaseClient>(() => {
+                // Create authentication based on Discogs token
+                var token = container.GetInstance<IAppConfig>().DiscogsApiToken;
+                var tokenInformation = new TokenAuthenticationInformation(token);
+                //Create discogs client using the authentication
+                return new DiscogsClient.DiscogsClient(tokenInformation, "foo", 5000);
+            });
         }
     }
 }

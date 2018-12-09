@@ -1,6 +1,6 @@
 import React from 'react';
 import Search from './components/Search';
-import MusiCrumbs from './components/MusiCrumbs';
+import Crumbs from './components/Crumbs';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
 const App = () => (
   <div>
     <Search />
-    <MusiCrumbs />
+    <Crumbs />
     <GlobalStyle />
   </div>
 );

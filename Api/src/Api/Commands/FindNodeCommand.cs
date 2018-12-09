@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using DiscogsClient.Data.Query;
 using System.Linq;
 using DiscogsClient.Data.Result;
-using System;
 
 namespace Api.Commands
 {

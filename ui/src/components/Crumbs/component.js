@@ -1,27 +1,11 @@
 import React from 'react';
-import { compose, withHandlers, withState } from 'recompose';
-import { connect } from 'react-redux';
 import Select, { components } from 'react-select';
-import { changeNodeValue } from '../actions/path';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import RightArrow from '@material-ui/icons/ArrowRightAlt';
 import ReleaseIcon from '@material-ui/icons/Album';
 import ArtistIcon from '@material-ui/icons/Person';
-import StyledItemWithThumbnail from './StyledItemWithThumbnail';
-
-const screenWidths = {
-  phone: 500,
-};
-
-// https://www.styled-components.com/docs/advanced#media-templates
-const media = Object.keys(screenWidths).reduce((acc, label) => {
-  acc[label] = (...args) => css`
-    @media (max-width: ${screenWidths[label]}px) {
-      ${css(...args)};
-    }
-  `;
-  return acc;
-}, {});
+import StyledItemWithThumbnail from '../StyledItemWithThumbnail';
+import media from '../media';
 
 const CrumbSeparator = styled(RightArrow)`
   margin: 25px 0;
@@ -64,7 +48,7 @@ const hidden = _ => ({
   display: 'none',
 });
 
-const Crumbs = ({
+export default ({
   path: { initialCrumbLoading, crumbs },
   createNodeChangeHandler,
   activeCrumbIndex,
@@ -132,24 +116,3 @@ const Crumbs = ({
     )}
   </div>
 );
-
-const mapStateToProps = ({ path }) => ({
-  path,
-});
-const mapDispatchToProps = { changeNodeValue };
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  withState('activeCrumbIndex', 'setActiveCrumbIndex', -1),
-  withHandlers({
-    createNodeChangeHandler: props => crumb => (value, { action }) => {
-      if (action === 'select-option') {
-        props.changeNodeValue(crumb, value);
-        props.setActiveCrumbIndex(-1);
-      }
-    },
-  })
-)(Crumbs);

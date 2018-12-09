@@ -293,3 +293,5 @@ __pycache__/
 .build/*/
 .drop/
 .next/
+
+.env
