@@ -9,6 +9,9 @@
     <PackageReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="DiscogsClient" Version="2.3.0"/>
     <PackageReference Include="morelinq" Version="3.0.0"/>
+    <PackageReference Include="SpotifyAPI.Web" Version="3.1.1"/>
+    <PackageReference Include="SpotifyAPI.Web.Auth" Version="3.1.1"/>
+    <PackageReference Include="AspNet.Security.OAuth.Spotify" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Condition="$(Configuration) == 'Debug'" Include="../../../../github/andycmaj/AspNetCore.ApplicationBlocks/src/AspNetCore.ApplicationBlocks.FrontEnd/AspNetCore.ApplicationBlocks.FrontEnd.csproj"/>

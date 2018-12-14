@@ -1,3 +1,4 @@
+using Api.Strategies;
 using AspNetCore.ApplicationBlocks.DependencyInjection;
 using DiscogsClient;
 using DiscogsClient.Internal;
@@ -16,6 +17,9 @@ namespace Api.Startup
                 //Create discogs client using the authentication
                 return new DiscogsClient.DiscogsClient(tokenInformation, "foo", 5000);
             });
+
+            container.Register<DiscogsSearchStrategy>();
+            container.Register<DiscogsVisitNodeStrategy>();
         }
     }
 }

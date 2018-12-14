@@ -1,11 +1,8 @@
 using System.Threading.Tasks;
 using AspNetCore.ApplicationBlocks.Commands;
 using Api.Models;
-using DiscogsClient;
 using System.Collections.Generic;
-using DiscogsClient.Data.Query;
-using System.Linq;
-using DiscogsClient.Data.Result;
+using Api.Strategies;
 
 namespace Api.Commands
 {
@@ -17,44 +14,17 @@ namespace Api.Commands
         public class FindNodeCommandHandler
             : IFunctionHandlerAsync<FindNodeCommand, IReadOnlyList<INode>>
         {
-            private readonly IDiscogsDataBaseClient discogsClient;
+            private readonly IStrategyFactory strategyFactory;
 
-            public FindNodeCommandHandler(IDiscogsDataBaseClient discogsClient)
+            public FindNodeCommandHandler(IStrategyFactory strategyFactory)
             {
-                this.discogsClient = discogsClient;
+                this.strategyFactory = strategyFactory;
             }
 
             public async Task<IReadOnlyList<INode>> ExecuteAsync(FindNodeCommand command)
             {
-                var results = discogsClient
-                    .SearchAsEnumerable(
-                        new DiscogsSearch
-                        {
-                            query = command.Query,
-                            type = command.Type.ToDiscogsType()
-                        },
-                        100
-                    )
-                    .ToAsyncEnumerable();
-
-                return await results
-                    .Select(ConvertSearchResultToNode)
-                    .ToList();
-            }
-
-            private static INode ConvertSearchResultToNode(DiscogsSearchResult result)
-            {
-                return result.type == DiscogsEntityType.artist
-                    ? (INode) new Artist {
-                        Id = result.id,
-                        Name = result.title,
-                        ThumbnailUrl = result.thumb,
-                    }
-                    : (INode) new Release {
-                        Id = result.id,
-                        Name = result.title,
-                        ThumbnailUrl = result.thumb
-                    };
+                var searchStrategy = strategyFactory.GetSearchStrategy();
+                return await searchStrategy.SearchAsync(command.Query, command.Type);
             }
         }
     }

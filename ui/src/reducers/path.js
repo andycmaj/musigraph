@@ -1,6 +1,13 @@
-import { createApiActionTypes } from '../actions/createApiActions';
+import createApiActions, {
+  createApiActionTypes,
+} from '../actions/createApiActions';
 import { whereEq, findIndex, omit } from 'ramda';
-import { RESET_PATH, CLEAR_PATH, CHANGE_NODE_VALUE } from '../actions/path';
+import {
+  RESET_PATH,
+  CLEAR_PATH,
+  CHANGE_NODE_VALUE,
+  GET_CRUMB_ACTIONS,
+} from '../actions/path';
 
 const defaultState = {
   crumbs: [],
@@ -10,6 +17,10 @@ const {
   request: { type: resetPathRequest },
   success: { type: resetPathSuccess },
 } = createApiActionTypes(RESET_PATH);
+
+const {
+  request: { type: getCrumbActionsRequest },
+} = createApiActionTypes(GET_CRUMB_ACTIONS);
 
 const changeNodeActions = createApiActionTypes(CHANGE_NODE_VALUE);
 
@@ -33,6 +44,17 @@ const toggleCrumbLoading = (crumbs, changedCrumb, loading) =>
         ? {
             ...crumb,
             loading,
+          }
+        : crumb
+  );
+
+const toggleCrumbActionsLoading = (crumbs, changedCrumb, actionsLoading) =>
+  crumbs.map(
+    crumb =>
+      crumb === changedCrumb
+        ? {
+            ...crumb,
+            actionsLoading,
           }
         : crumb
   );
@@ -66,6 +88,13 @@ const crumbsReducer = (state = defaultState, { type, payload, error }) => {
       return {
         ...state,
         crumbs: replaceTailCrumbs(state.crumbs, changedCrumb, newCrumb),
+      };
+    }
+    case getCrumbActionsRequest: {
+      const { changedCrumb } = payload;
+      return {
+        ...state,
+        crumbs: toggleCrumbActionsLoading(state.crumbs, changedCrumb, true),
       };
     }
     default:

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import RightArrow from '@material-ui/icons/ArrowRightAlt';
 import ReleaseIcon from '@material-ui/icons/Album';
 import ArtistIcon from '@material-ui/icons/Person';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import StyledItemWithThumbnail from '../StyledItemWithThumbnail';
 import media from '../media';
 
@@ -35,12 +36,42 @@ const SelectContainer = styled(components.SelectContainer)`
   `};
 `;
 
+const ControlContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  a {
+    margin: 0 10px;
+  }
+`;
+
+const Control = ( actionsLoading, actions, createValueClickHandler ) => props => {
+  const { hasValue, getValue } = props;
+  return (
+    <ControlContainer>
+      <components.Control {...props} />
+      {hasValue && (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={getValue()[0].infoUrl}
+        >
+          Info
+        </a>
+      )}
+      {actionsLoading && <CircularProgress />}
+      {actions && actions.map(action => (
+        <span>action.label</span>
+      ))}
+    </ControlContainer>
+  );
+};
+
 const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
     {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
-    <a target="_blank" rel="noopener noreferrer" href={data.infoUrl}>
-      {children}
-    </a>
+    {children}
   </components.SingleValue>
 ));
 
@@ -53,6 +84,7 @@ export default ({
   createNodeChangeHandler,
   activeCrumbIndex,
   setActiveCrumbIndex,
+  createValueClickHandler,
 }) => (
   <div>
     {initialCrumbLoading ? (
@@ -61,7 +93,7 @@ export default ({
       !!crumbs.length && (
         <CrumbsContainer>
           {crumbs.map((crumb, index) => {
-            const { source, nodes, loading } = crumb;
+            const { source, nodes, loading, actionsLoading } = crumb;
 
             const isLastCrumb = index === crumbs.length - 1;
 
@@ -76,6 +108,11 @@ export default ({
             return (
               <React.Fragment key={`${source.type}_${source.id}`}>
                 <Select
+                  components={{
+                    SelectContainer,
+                    SingleValue,
+                    Control: Control(actionsLoading, null, createValueClickHandler),
+                  }}
                   styles={{
                     dropdownIndicator: hidden,
                     indicatorSeparator: hidden,
@@ -86,6 +123,7 @@ export default ({
                     control: provided => ({
                       ...provided,
                       border: 'none',
+                      flex: '1 0 auto',
                     }),
                   }}
                   placeholder={
@@ -99,7 +137,6 @@ export default ({
                   isSearchable={false}
                   isLoading={loading}
                   options={nodes}
-                  components={{ SelectContainer, SingleValue }}
                   filterOption={() => true}
                   getOptionLabel={node => node.name}
                   getOptionValue={node => node}

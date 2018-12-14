@@ -1,13 +1,13 @@
 import { compose, withHandlers, withState } from 'recompose';
 import { connect } from 'react-redux';
-import { changeNodeValue } from '../../actions/path';
+import { changeNodeValue, getCrumbActions } from '../../actions/path';
 
 import Component from './component';
 
 const mapStateToProps = ({ path }) => ({
   path,
 });
-const mapDispatchToProps = { changeNodeValue };
+const mapDispatchToProps = { changeNodeValue, getCrumbActions };
 
 export default compose(
   connect(
@@ -19,8 +19,13 @@ export default compose(
     createNodeChangeHandler: props => crumb => (value, { action }) => {
       if (action === 'select-option') {
         props.changeNodeValue(crumb, value);
+        props.getCrumbActions(crumb, value);
         props.setActiveCrumbIndex(-1);
       }
+    },
+    createValueClickHandler: props => value => e => {
+      e.stopPropagation();
+      alert(value.infoUrl);
     },
   })
 )(Component);

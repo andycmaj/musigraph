@@ -1,4 +1,5 @@
 ﻿using System;
+using Api.Strategies;
 using App.Metrics.Health;
 using AspNetCore.ApplicationBlocks;
 using Microsoft.AspNetCore.Builder;
@@ -25,7 +26,8 @@ namespace Api.Startup
             container = new Container()
                 .ForFrontEnd()
                 .WithModules(
-                    new DiscogsClientModule()
+                    new DiscogsClientModule(),
+                    new SpotifyClientModule()
                 );
             this.environment = environment;
         }
@@ -65,6 +67,8 @@ namespace Api.Startup
         public void Configure(IApplicationBuilder builder, Container container)
         {
             System.Console.WriteLine($"APPINIT (8): {nameof(CustomStartup.Configure)}");
+
+            container.RegisterSingleton<IStrategyFactory, StrategyFactory>();
 
             container.Verify();
 

@@ -14,6 +14,12 @@ namespace Api
             this.frameworkConfiguration = frameworkConfiguration;
         }
 
+        public string DataSource => GetString("DataSource", "Discogs");
+
         public string DiscogsApiToken => GetString("Discogs:ApiToken");
+
+        public string SpotifyClientId => GetString("Spotify:ClientId");
+
+        public string SpotifyClientSecret => GetString("Spotify:ClientSecret");
     }
 }
