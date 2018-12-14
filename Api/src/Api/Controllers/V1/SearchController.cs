@@ -3,7 +3,7 @@ using Api.Commands;
 using AspNetCore.ApplicationBlocks.Commands;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Iqviate.Templates.FrontEnd.Controllers.V1
+namespace Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     public class SearchController : Controller
