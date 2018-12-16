@@ -15,5 +15,11 @@ image:
   repository: andycunn/musigraph-api
   pullPolicy: Always
 
+cookieDomain: *.musigraph.app
+
 discogs:
   apiToken: ''
+
+spotify:
+  clientId: ''
+  clientSecret: ''

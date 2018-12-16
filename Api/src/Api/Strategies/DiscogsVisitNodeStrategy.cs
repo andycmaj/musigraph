@@ -44,8 +44,8 @@ namespace Api.Strategies
                     Name = release.title,
                     MainArtist = release.artist,
                     ThumbnailUrl = release.thumb,
-                    Id = GetReleaseId(release),
-                    InfoUrl = $"https://www.discogs.com/release/{GetReleaseId(release)}"
+                    Id = release.GetReleaseId(),
+                    InfoUrl = release.GetInfoUrl()
                 })
                 .ToList();
 
@@ -58,11 +58,6 @@ namespace Api.Strategies
                 Nodes = releases
             };
         }
-
-        private static string GetReleaseId(DiscogsArtistRelease release) =>
-            (release.type == "master"
-                ? release.main_release
-                : release.id).ToString();
 
         private async Task<AdjacentNodesResult> GetAdjacentArtists(int releaseId, int maxAdjacentNodes)
         {
@@ -78,7 +73,7 @@ namespace Api.Strategies
                     Name = artist.name,
                     Id = artist.id.ToString(),
                     Role = artist.role,
-                    InfoUrl = $"https://www.discogs.com/artist/{artist.id}"
+                    InfoUrl = artist.GetInfoUrl()
                 })
                 .ToList();
 

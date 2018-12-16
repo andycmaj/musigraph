@@ -62,6 +62,7 @@ const createApiActions = (
       options: {
         redirect: 'follow',
       },
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',

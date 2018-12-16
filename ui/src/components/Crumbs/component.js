@@ -1,11 +1,17 @@
 import React from 'react';
-import Select, { components } from 'react-select';
+import { onlyUpdateForKeys } from 'recompose';
 import styled from 'styled-components';
+
+import Select, { components } from 'react-select';
 import RightArrow from '@material-ui/icons/ArrowRightAlt';
 import ReleaseIcon from '@material-ui/icons/Album';
 import ArtistIcon from '@material-ui/icons/Person';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import StyledItemWithThumbnail from '../StyledItemWithThumbnail';
+import AudioAction from './AudioAction';
+import GoToIcon from '@material-ui/icons/OpenInBrowser';
+import Tooltip from '@material-ui/core/Tooltip';
+import StyledAction from './StyledAction';
+
 import media from '../media';
 
 const CrumbSeparator = styled(RightArrow)`
@@ -46,27 +52,27 @@ const ControlContainer = styled.div`
   }
 `;
 
-const Control = ( actionsLoading, actions, createValueClickHandler ) => props => {
-  const { hasValue, getValue } = props;
-  return (
-    <ControlContainer>
-      <components.Control {...props} />
-      {hasValue && (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={getValue()[0].infoUrl}
-        >
-          Info
-        </a>
-      )}
-      {actionsLoading && <CircularProgress />}
-      {actions && actions.map(action => (
-        <span>action.label</span>
-      ))}
-    </ControlContainer>
-  );
+const actions = {
+  Audio: action => <AudioAction action={action} />,
+  ExternalLink: ({ label, url }) => (
+    <Tooltip title={label}>
+      <StyledAction target="_blank" rel="noopener noreferrer" href={url}>
+        <GoToIcon />
+      </StyledAction>
+    </Tooltip>
+  ),
 };
+
+const renderAction = ({ type, ...action }) => (
+  <span key={action.url}>{actions[type](action)}</span>
+);
+
+const Control = actions => props => (
+  <ControlContainer>
+    <components.Control {...props} />
+    {actions && actions.map(renderAction)}
+  </ControlContainer>
+);
 
 const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
@@ -79,12 +85,69 @@ const hidden = _ => ({
   display: 'none',
 });
 
+const Crumb = ({
+  menuIsOpen,
+  createNodeChangeHandler,
+  setActiveCrumbIndex,
+  crumb,
+  index,
+  actions,
+  actionsLoading,
+}) => {
+  const { nodes, loading, source } = crumb;
+  return (
+    <Select
+      components={{
+        SelectContainer,
+        SingleValue,
+        Control: Control(actions),
+      }}
+      styles={{
+        dropdownIndicator: hidden,
+        indicatorSeparator: hidden,
+        valueContainer: provided => ({
+          ...provided,
+          height: '50px',
+        }),
+        control: provided => ({
+          ...provided,
+          border: 'none',
+          flex: '1 0 auto',
+        }),
+      }}
+      placeholder={
+        source.type === 'Artist'
+          ? `${source.name}'s Releases...`
+          : `Artists on ${source.name}...`
+      }
+      menuIsOpen={menuIsOpen}
+      maxMenuHeight={500}
+      closeMenuOnScroll={true}
+      isSearchable={false}
+      isLoading={loading || actionsLoading}
+      options={nodes}
+      filterOption={() => true}
+      getOptionLabel={node => node.name}
+      getOptionValue={node => node}
+      closeMenuOnSelect={true}
+      onChange={createNodeChangeHandler(crumb)}
+      onMenuOpen={() => setActiveCrumbIndex(index)}
+    />
+  );
+};
+
+const PureCrumb = onlyUpdateForKeys([
+  'id',
+  'menuIsOpen',
+  'actions',
+  'actionsLoading',
+])(Crumb);
+
 export default ({
   path: { initialCrumbLoading, crumbs },
   createNodeChangeHandler,
   activeCrumbIndex,
   setActiveCrumbIndex,
-  createValueClickHandler,
 }) => (
   <div>
     {initialCrumbLoading ? (
@@ -93,56 +156,29 @@ export default ({
       !!crumbs.length && (
         <CrumbsContainer>
           {crumbs.map((crumb, index) => {
-            const { source, nodes, loading, actionsLoading } = crumb;
+            const { source, actions, actionsLoading } = crumb;
+
+            const crumbId = `${source.type}_${source.id}`;
 
             const isLastCrumb = index === crumbs.length - 1;
 
             // we only wanna specify menuIsOpen for the LAST crumb, rest of crumbs should not have this prop at all.
             // otherwise, value of this prop will lock Select open or closed
-            const additionalProps =
+            const menuIsOpen =
               (activeCrumbIndex === -1 && isLastCrumb) ||
-              index === activeCrumbIndex
-                ? { menuIsOpen: true }
-                : { menuIsOpen: false };
+              index === activeCrumbIndex;
 
             return (
-              <React.Fragment key={`${source.type}_${source.id}`}>
-                <Select
-                  components={{
-                    SelectContainer,
-                    SingleValue,
-                    Control: Control(actionsLoading, null, createValueClickHandler),
-                  }}
-                  styles={{
-                    dropdownIndicator: hidden,
-                    indicatorSeparator: hidden,
-                    valueContainer: provided => ({
-                      ...provided,
-                      height: '50px',
-                    }),
-                    control: provided => ({
-                      ...provided,
-                      border: 'none',
-                      flex: '1 0 auto',
-                    }),
-                  }}
-                  placeholder={
-                    source.type === 'Artist'
-                      ? `${source.name}'s Releases...`
-                      : `Artists on ${source.name}...`
-                  }
-                  {...additionalProps}
-                  maxMenuHeight={500}
-                  closeMenuOnScroll={true}
-                  isSearchable={false}
-                  isLoading={loading}
-                  options={nodes}
-                  filterOption={() => true}
-                  getOptionLabel={node => node.name}
-                  getOptionValue={node => node}
-                  closeMenuOnSelect={true}
-                  onChange={createNodeChangeHandler(crumb)}
-                  onMenuOpen={() => setActiveCrumbIndex(index)}
+              <React.Fragment key={crumbId}>
+                <PureCrumb
+                  id={crumbId}
+                  crumb={crumb}
+                  actions={actions}
+                  actionsLoading={actionsLoading}
+                  index={index}
+                  createNodeChangeHandler={createNodeChangeHandler}
+                  setActiveCrumbIndex={setActiveCrumbIndex}
+                  menuIsOpen={menuIsOpen}
                 />
                 {!isLastCrumb ? <CrumbSeparator /> : null}
               </React.Fragment>

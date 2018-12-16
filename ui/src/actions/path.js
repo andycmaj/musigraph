@@ -1,3 +1,4 @@
+import { clone } from 'ramda';
 import createApiActions from './createApiActions';
 import { API_URL } from '../constants';
 
@@ -29,12 +30,12 @@ export const changeNodeValue = (changedCrumb, selectedNode) =>
     }`,
     actionTypeOverrides: {
       request: {
-        payload: () => ({ changedCrumb }),
+        payload: () => ({ changedCrumb: clone(changedCrumb) }),
       },
       success: {
         payload: (action, state, response) =>
           response.json().then(newCrumb => ({
-            changedCrumb,
+            changedCrumb: clone(changedCrumb),
             selectedNode,
             newCrumb,
           })),
@@ -49,7 +50,16 @@ export const getCrumbActions = (changedCrumb, selectedNode) =>
     }`,
     actionTypeOverrides: {
       request: {
-        payload: () => ({ changedCrumb }),
+        payload: () => ({
+          changedCrumb: clone(changedCrumb),
+        }),
       },
-    }
+      success: {
+        payload: (action, state, response) =>
+          response.json().then(actions => ({
+            changedCrumb: clone(changedCrumb),
+            actions,
+          })),
+      },
+    },
   });

@@ -1,5 +1,8 @@
 using Api.Strategies;
+using AspNet.Security.OAuth.Spotify;
 using AspNetCore.ApplicationBlocks.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using SimpleInjector;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
@@ -10,20 +13,43 @@ namespace Api.Startup
     {
         public void RegisterServices(Container container)
         {
-            container.RegisterSingleton<SpotifyWebAPI>(() =>
+            container.Register<SpotifyWebAPI>(() =>
             {
+                var httpContext = container.GetInstance<IHttpContextAccessor>().HttpContext;
                 var config = container.GetInstance<IAppConfig>();
 
-                return new SpotifyWebAPI
+                if (httpContext != null &&
+                    httpContext.User.Identity.AuthenticationType == SpotifyAuthenticationDefaults.AuthenticationScheme &&
+                    httpContext.User.Identity.IsAuthenticated
+                )
+                {
+                    var accessToken = httpContext.GetTokenAsync("access_token").Result;
+                    var refreshToken = httpContext.GetTokenAsync("refresh_token").Result;
+
+                    return new SpotifyWebAPI
+                    {
+                        UseAuth = true,
+                        TokenType = "Bearer",
+                        AccessToken = accessToken
+                    };
+                }
+
+                var clientCredsToken =
+                    new CredentialsAuth(config.SpotifyClientId, config.SpotifyClientSecret)
+                    .GetToken()
+                    .Result;
+
+                // Use Client Token auth otherwise
+                return new SpotifyWebAPI()
                 {
                     UseAuth = true,
-                    TokenType = "Bearer",
-                    AccessToken = "BQBacEmP8aI3HZWnako8Yd9cexltx4-P3O98O83tkUoxBF-djsiag22PVq7YFN6NDDQ6m-xot0Bkr_EXJPM_2v_MZzcaBti74yHA1akALEe-pfF4uQ0JVDCX9dgQ2_WF5Ivqy1Ic6_GZlWVP95v7mwA8mefU2qZONkrBFLALn0bZKdNW2QrF5fyeNAVOiRd3k1Y_9BPIYbVflEJsQyEylxX1tEAprXOHlVA3YrH4-0VkbQzRDGpEz4JrBDYe5kQbBzajPfI49Jj4r71Z1w"
+                    TokenType = clientCredsToken.TokenType,
+                    AccessToken = clientCredsToken.AccessToken
                 };
-            });
+            }, Lifestyle.Scoped);
 
+            container.Register<ISpotify, Spotify>(Lifestyle.Scoped);
             container.Register<SpotifySearchStrategy>();
-            // container.Register<SpotifyVi>();
         }
     }
 }

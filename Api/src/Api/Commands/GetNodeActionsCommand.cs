@@ -7,8 +7,6 @@ using Api.Models;
 using AspNetCore.ApplicationBlocks.Commands;
 using DiscogsClient;
 using DiscogsClient.Data.Result;
-using SpotifyAPI.Web;
-using SpotifyAPI.Web.Enums;
 
 namespace Api.Commands
 {
@@ -17,13 +15,15 @@ namespace Api.Commands
         public int NodeId { get; set; }
         public NodeType NodeType { get; set; }
 
-        public class GetNodeActionsCommandHandler
-            : IFunctionHandlerAsync<GetNodeActionsCommand, IList<Models.Action>>
+        public class Handler : IFunctionHandlerAsync<GetNodeActionsCommand, IList<Models.Action>>
         {
             private readonly IDiscogsDataBaseClient discogs;
-            private readonly SpotifyWebAPI spotify;
+            private readonly ISpotify spotify;
 
-            public GetNodeActionsCommandHandler(IDiscogsDataBaseClient discogs, SpotifyWebAPI spotify)
+            public Handler(
+                IDiscogsDataBaseClient discogs,
+                ISpotify spotify
+            )
             {
                 this.discogs = discogs;
                 this.spotify = spotify;
@@ -50,17 +50,32 @@ namespace Api.Commands
             {
                 var actions = new List<Models.Action>();
 
-                var exactAlbumQuery = $"album: \"{discogsRelease.title}\" artist: \"{SanitizeArtistName(discogsRelease.artists[0].name)}\"";
-                var results = await spotify.SearchItemsAsync(exactAlbumQuery, SearchType.Album, market: "US");
-                var release = results.Albums.Items.First();
-
-                var tracks = await spotify.GetAlbumTracksAsync(release.Id, limit: 1);
-                var track = tracks.Items.Single();
                 actions.Add(new Models.Action {
-                    Label = $"Preview '{track.Name}'",
-                    Type = ActionType.Audio,
-                    Url = track.PreviewUrl
+                    Label = "Info",
+                    Type = ActionType.ExternalLink,
+                    Url = discogsRelease.GetInfoUrl()
                 });
+
+                var results = await spotify.FindAlbumsAsync(
+                    discogsRelease.title,
+                    SanitizeArtistName(discogsRelease.artists[0].name)
+                );
+                var release = results.FirstOrDefault();
+
+                if (release != null)
+                {
+                    var tracks = await spotify.GetAlbumTracksAsync(release.Id, limit: 1);
+                    var track = tracks.SingleOrDefault();
+
+                    if (!string.IsNullOrEmpty(track?.PreviewUrl))
+                    {
+                        actions.Add(new Models.Action {
+                            Label = track.Name,
+                            Type = ActionType.Audio,
+                            Url = track.PreviewUrl
+                        });
+                    }
+                }
 
                 return actions;
             }
@@ -72,19 +87,27 @@ namespace Api.Commands
             {
                 var actions = new List<Models.Action>();
 
-                var exactArtistQuery = $"artist: \"{SanitizeArtistName(discogsArtist.name)}\"";
-                var results = await spotify.SearchItemsAsync(exactArtistQuery, SearchType.Artist, market: "US");
-                var artist = results.Artists.Items.First();
+                actions.Add(new Models.Action {
+                    Label = "Info",
+                    Type = ActionType.ExternalLink,
+                    Url = discogsArtist.GetInfoUrl()
+                });
 
-                var tracks = await spotify.GetArtistsTopTracksAsync(artist.Id, "US");
-                if (tracks.Tracks.Any())
+                var results = await spotify.FindArtistsAsync(SanitizeArtistName(discogsArtist.name));
+                var artist = results.FirstOrDefault();
+
+                if (artist != null)
                 {
-                    var track = tracks.Tracks.First();
-                    actions.Add(new Models.Action {
-                        Label = $"Preview '{track.Name}'",
-                        Type = ActionType.Audio,
-                        Url = track.PreviewUrl
-                    });
+                    var tracks = await spotify.GetArtistTopTracksAsync(artist.Id);
+                    if (tracks.Any())
+                    {
+                        var track = tracks.First();
+                        actions.Add(new Models.Action {
+                            Label = track.Name,
+                            Type = ActionType.Audio,
+                            Url = track.PreviewUrl
+                        });
+                    }
                 }
 
                 return actions;
