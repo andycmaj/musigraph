@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  frontend:
+    image: graphworker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: GraphWorker.dll
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

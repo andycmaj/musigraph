@@ -40,6 +40,7 @@ namespace Api.Startup
                             )
                             .AllowAnyHeader()
                             .AllowAnyMethod()
+                            .AllowCredentials()
                     );
 
                     builder.UseDefaultApiMiddleware(

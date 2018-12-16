@@ -22,5 +22,13 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("actions")]
+        public async Task<IActionResult> GetActions([FromQuery] GetNodeActionsCommand command)
+        {
+            var result = await commandRouter.ExecuteFunctionAsync(command);
+
+            return Ok(result);
+        }
     }
 }

@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Iqviate.Templates.FrontEnd.Tests
+namespace Api.Tests
 {
     public class FindArtistCommandTest
     {

@@ -4,8 +4,9 @@ namespace Api.Models
 {
     public interface INode
     {
+        string DataSource { get; }
         NodeType Type { get; }
-        int Id { get; }
+        string Id { get; }
         string Name { get; }
         string ThumbnailUrl { get; }
         string InfoUrl { get; }

@@ -1,6 +1,11 @@
 import { createApiActionTypes } from '../actions/createApiActions';
-import { whereEq, findIndex, omit } from 'ramda';
-import { RESET_PATH, CLEAR_PATH, CHANGE_NODE_VALUE } from '../actions/path';
+import { findIndex } from 'ramda';
+import {
+  RESET_PATH,
+  CLEAR_PATH,
+  CHANGE_NODE_VALUE,
+  GET_CRUMB_ACTIONS,
+} from '../actions/path';
 
 const defaultState = {
   crumbs: [],
@@ -11,11 +16,17 @@ const {
   success: { type: resetPathSuccess },
 } = createApiActionTypes(RESET_PATH);
 
+const {
+  request: { type: getCrumbActionsRequest },
+  success: { type: getCrumbActionsSuccess },
+} = createApiActionTypes(GET_CRUMB_ACTIONS);
+
 const changeNodeActions = createApiActionTypes(CHANGE_NODE_VALUE);
 
 const replaceTailCrumbs = (crumbs, changedCrumb, newCrumb) => {
-  const index = findIndex(whereEq(omit(['loading'], changedCrumb)))(crumbs);
-  console.log([changedCrumb, index]);
+  const index = findIndex(crumb => crumb.source.id === changedCrumb.source.id)(
+    crumbs
+  );
   return [
     ...crumbs.slice(0, index),
     {
@@ -29,10 +40,33 @@ const replaceTailCrumbs = (crumbs, changedCrumb, newCrumb) => {
 const toggleCrumbLoading = (crumbs, changedCrumb, loading) =>
   crumbs.map(
     crumb =>
-      crumb === changedCrumb
+      crumb.source.id === changedCrumb.source.id
         ? {
             ...crumb,
             loading,
+          }
+        : crumb
+  );
+
+const setCrumbActionsLoading = (crumbs, changedCrumb) =>
+  crumbs.map(
+    crumb =>
+      crumb.source.id === changedCrumb.source.id
+        ? {
+            ...crumb,
+            actionsLoading: true,
+          }
+        : crumb
+  );
+
+const setCrumbActionsLoaded = (crumbs, changedCrumb, actions) =>
+  crumbs.map(
+    crumb =>
+      crumb.source.id === changedCrumb.source.id
+        ? {
+            ...crumb,
+            actionsLoading: false,
+            actions,
           }
         : crumb
   );
@@ -66,6 +100,20 @@ const crumbsReducer = (state = defaultState, { type, payload, error }) => {
       return {
         ...state,
         crumbs: replaceTailCrumbs(state.crumbs, changedCrumb, newCrumb),
+      };
+    }
+    case getCrumbActionsRequest: {
+      const { changedCrumb } = payload;
+      return {
+        ...state,
+        crumbs: setCrumbActionsLoading(state.crumbs, changedCrumb),
+      };
+    }
+    case getCrumbActionsSuccess: {
+      const { changedCrumb, actions } = payload;
+      return {
+        ...state,
+        crumbs: setCrumbActionsLoaded(state.crumbs, changedCrumb, actions),
       };
     }
     default:

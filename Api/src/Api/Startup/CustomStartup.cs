@@ -1,6 +1,9 @@
 ﻿using System;
+using Api.Strategies;
 using App.Metrics.Health;
+using AspNet.Security.OAuth.Spotify;
 using AspNetCore.ApplicationBlocks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +28,8 @@ namespace Api.Startup
             container = new Container()
                 .ForFrontEnd()
                 .WithModules(
-                    new DiscogsClientModule()
+                    new DiscogsClientModule(),
+                    new SpotifyClientModule()
                 );
             this.environment = environment;
         }
@@ -54,6 +58,29 @@ namespace Api.Startup
                 configureHealthCheck : configureHealthCheck
             );
 
+            services
+                .AddAuthentication(options => {
+                    options.DefaultScheme = SpotifyAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options => {
+                    var config = container.GetInstance<IAppConfig>();
+
+                    options.Cookie.Domain = config.CookieDomain;
+                    options.Cookie.Expiration = TimeSpan.FromHours(1);
+                })
+                .AddSpotify(options => {
+                    var config = container.GetInstance<IAppConfig>();
+
+                    options.ClientId = config.SpotifyClientId;
+                    options.ClientSecret = config.SpotifyClientSecret;
+
+                    options.CallbackPath = "/api/v1/authentication/callback/spotify";
+
+                    options.SaveTokens = true;
+                });
+
+
             // Startup filters are executed in order with respect to registration
             services.AddTransient<IStartupFilter, ApplicationBlocksStartupFilter>();
             services.AddTransient<IStartupFilter, DefaultMiddlewareStartupFilter>();
@@ -65,6 +92,8 @@ namespace Api.Startup
         public void Configure(IApplicationBuilder builder, Container container)
         {
             System.Console.WriteLine($"APPINIT (8): {nameof(CustomStartup.Configure)}");
+
+            container.RegisterSingleton<IStrategyFactory, StrategyFactory>();
 
             container.Verify();
 
