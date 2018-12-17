@@ -15,7 +15,7 @@ image:
   repository: andycunn/musigraph-api
   pullPolicy: Always
 
-cookieDomain: '*.musigraph.app'
+cookieDomain: musigraph.app
 
 discogs:
   apiToken: ''

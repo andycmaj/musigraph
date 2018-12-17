@@ -26,7 +26,6 @@
     "reduce-reducers": "^0.4.3",
     "redux": "^4.0.1",
     "redux-api-middleware": "3.0.1",
-    "redux-audio": "^1.0.0",
     "redux-localstorage-simple": "^2.1.4",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.3.0",
@@ -44,7 +43,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "REACT_APP_API_URL=https://api.musigraph.app/api/v1 react-scripts build",
+    "build": "REACT_APP_API_URL=https://api.musigraph.app/api/v1 react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

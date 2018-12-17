@@ -4933,11 +4933,6 @@ immer@1.7.2:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.7.2.tgz#a51e9723c50b27e132f6566facbec1c85fc69547"
   integrity sha512-4Urocwu9+XLDJw4Tc6ZCg7APVjjLInCFvO4TwGsAYV5zT6YYSor14dsZR0+0tHlDIN92cFUOq+i7fC00G5vTxA==
 
-immutable@^3.8.1:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
-  integrity sha1-wkOZUUVbs5kT2vKBN28VMOEErfM=
-
 immutable@^4.0.0-rc.12:
   version "4.0.0-rc.12"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
@@ -8664,13 +8659,6 @@ redux-api-middleware@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/redux-api-middleware/-/redux-api-middleware-3.0.1.tgz#fa28b22cf34abdf75fb32ac0c2fd1a50d84637a8"
   integrity sha512-orktovWGaLoKZU88hWcQ+LswSyMmfxyrR4zEpAa/Ccc3BW2ugZoRqA9ZBFaa8+VbxfZGzz6DsTTxjxsShY9Zqg==
-
-redux-audio@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/redux-audio/-/redux-audio-1.0.0.tgz#985cee20fbfc06f5338a4341822ed1b57fdd9479"
-  integrity sha1-mFzuIPv8BvUzikNBgi7RtX/dlHk=
-  dependencies:
-    immutable "^3.8.1"
 
 redux-localstorage-simple@^2.1.4:
   version "2.1.4"
