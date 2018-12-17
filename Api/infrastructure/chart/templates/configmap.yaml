@@ -7,4 +7,4 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: {{ .Values.application.environment }}
   APPLICATION__VERSION: {{ .Values.application.version }}
-  COOKIEDOMAIN: {{ .Values.cookieDomain }}
+  COOKIEDOMAIN: '{{ .Values.cookieDomain }}'

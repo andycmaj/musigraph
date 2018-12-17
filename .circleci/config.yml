@@ -34,7 +34,9 @@ jobs:
               --namespace musigraph \
               --set application.version=$CIRCLE_SHA1 \
               --set application.environment=production \
-              --set discogs.apiToken=$DISCOGS__APITOKEN
+              --set discogs.apiToken=$DISCOGS__APITOKEN \
+              --set spotify.clientId=$SPOTIFY__CLIENTID \
+              --set spotify.clientSecret=$SPOTIFY__CLIENTSECRET
 
 workflows:
   version: 2
