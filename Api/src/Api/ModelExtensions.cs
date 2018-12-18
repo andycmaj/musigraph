@@ -9,13 +9,11 @@ namespace Api
                 ? release.main_release
                 : release.id).ToString();
 
-        public static string GetReleaseId(this DiscogsRelease release) =>
-            (release.master_id != 0
-                ? release.master_id
-                : release.id).ToString();
+        public static string GetReleaseId(this DiscogsRelease release) => 
+            release.id.ToString();
 
         public static string GetInfoUrl(this DiscogsArtistRelease release) =>
-            $"https://www.discogs.com/release/{release.GetReleaseId()}";
+            $"https://www.discogs.com/{release.type}/{release.GetReleaseId()}";
 
         public static string GetInfoUrl(this DiscogsRelease release) =>
             $"https://www.discogs.com/release/{release.GetReleaseId()}";
