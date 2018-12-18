@@ -7,6 +7,7 @@ using Api.Models;
 using AspNetCore.ApplicationBlocks.Commands;
 using DiscogsClient;
 using DiscogsClient.Data.Result;
+using MoreLinq;
 
 namespace Api.Commands
 {
@@ -65,15 +66,19 @@ namespace Api.Commands
                 if (release != null)
                 {
                     var tracks = await spotify.GetAlbumTracksAsync(release.Id, limit: 1);
-                    var track = tracks.SingleOrDefault();
 
-                    if (!string.IsNullOrEmpty(track?.PreviewUrl))
+                    if (tracks.Any())
                     {
-                        actions.Add(new Models.Action {
-                            Label = track.Name,
-                            Type = ActionType.Audio,
-                            Url = track.PreviewUrl
-                        });
+                        var track = tracks.RandomSubset(1).First();
+
+                        if (!string.IsNullOrEmpty(track.PreviewUrl))
+                        {
+                            actions.Add(new Models.Action {
+                                Label = track.Name,
+                                Type = ActionType.Audio,
+                                Url = track.PreviewUrl
+                            });
+                        }
                     }
                 }
 
@@ -101,12 +106,16 @@ namespace Api.Commands
                     var tracks = await spotify.GetArtistTopTracksAsync(artist.Id);
                     if (tracks.Any())
                     {
-                        var track = tracks.First();
-                        actions.Add(new Models.Action {
-                            Label = track.Name,
-                            Type = ActionType.Audio,
-                            Url = track.PreviewUrl
-                        });
+                        var track = tracks.RandomSubset(1).First();
+
+                        if (!string.IsNullOrEmpty(track?.PreviewUrl))
+                        {
+                            actions.Add(new Models.Action {
+                                Label = track.Name,
+                                Type = ActionType.Audio,
+                                Url = track.PreviewUrl
+                            });
+                        }
                     }
                 }
 

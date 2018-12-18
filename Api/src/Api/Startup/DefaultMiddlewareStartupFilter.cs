@@ -48,7 +48,7 @@ namespace Api.Startup
                     ForwardedHeadersOptions forwardedHeadersOptions = null;
                     if (environment.IsProduction())
                     {
-                        new ForwardedHeadersOptions
+                        forwardedHeadersOptions = new ForwardedHeadersOptions
                         {
                             ForwardedHeaders =
                                 ForwardedHeaders.XForwardedHost |
