@@ -84,8 +84,17 @@ const hidden = _ => ({
   display: 'none',
 });
 
-const getNodeLabel = ({ name, subtitle }) =>
-  name + (!!subtitle ? ` (${subtitle})` : '');
+const LabelSub = styled.span`
+  color: lightslategrey;
+  font-weight: 100;
+`;
+
+const getNodeLabel = ({ name, subtitle }) => (
+  <span>
+    {name}
+    {!!subtitle && <LabelSub> ({subtitle})</LabelSub>}
+  </span>
+);
 
 const Crumb = ({
   menuIsOpen,
@@ -108,6 +117,7 @@ const Crumb = ({
         valueContainer: provided => ({
           ...provided,
           height: '50px',
+          padding: 0,
         }),
         control: provided => ({
           ...provided,

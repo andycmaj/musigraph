@@ -42,7 +42,7 @@ namespace Api.Strategies
                 .Select(release => new Release {
                     DataSource = "Discogs",
                     Name = release.title,
-                    MainArtist = release.artist,
+                    MainArtist = release.artist != artist.name ? release.artist : null,
                     ThumbnailUrl = release.thumb,
                     Id = release.GetReleaseId(),
                     InfoUrl = release.GetInfoUrl()
