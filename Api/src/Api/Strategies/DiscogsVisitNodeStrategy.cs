@@ -47,6 +47,7 @@ namespace Api.Strategies
                     Id = release.GetReleaseId(),
                     InfoUrl = release.GetInfoUrl()
                 })
+                .OrderBy(release => release.MainArtist)
                 .ToList();
 
             return new AdjacentNodesResult {
@@ -75,6 +76,7 @@ namespace Api.Strategies
                     Role = artist.role,
                     InfoUrl = artist.GetInfoUrl()
                 })
+                .OrderBy(artist => artist.Name)
                 .ToList();
 
             return new AdjacentNodesResult {
