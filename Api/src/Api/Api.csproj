@@ -15,7 +15,7 @@
     <PackageReference Include="Polly" Version="6.1.2"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Condition="$(Configuration) == 'Debug'" Include="../../../../github/andycmaj/AspNetCore.ApplicationBlocks/src/AspNetCore.ApplicationBlocks.FrontEnd/AspNetCore.ApplicationBlocks.FrontEnd.csproj"/>
-    <PackageReference Condition="$(Configuration) == 'Release'" Include="AspNetCore.ApplicationBlocks.FrontEnd" Version="1.0.3-t181218044012"/>
+    <ProjectReference Condition="$(Configuration) == 'Debug'" Include="../../../../github/andycmaj/AspNetCore.ApplicationBlocks/src/AspNetCore.ApplicationBlocks.FrontEnd/AspNetCore.ApplicationBlocks.FrontEnd.csproj" />
+    <PackageReference Condition="$(Configuration) == 'Release'" Include="AspNetCore.ApplicationBlocks.FrontEnd" Version="1.0.3-t181218052630" />
   </ItemGroup>
 </Project>

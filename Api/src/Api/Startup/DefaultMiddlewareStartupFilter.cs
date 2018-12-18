@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using SimpleInjector;
 using AspNetCore.ApplicationBlocks;
+using System.Net;
 
 namespace Api.Startup
 {
@@ -43,11 +45,27 @@ namespace Api.Startup
                             .AllowCredentials()
                     );
 
+                    ForwardedHeadersOptions forwardedHeadersOptions = null;
+                    if (environment.IsProduction())
+                    {
+                        new ForwardedHeadersOptions
+                        {
+                            ForwardedHeaders =
+                                ForwardedHeaders.XForwardedHost |
+                                ForwardedHeaders.XForwardedProto |
+                                ForwardedHeaders.XForwardedFor,
+                        };
+                        forwardedHeadersOptions.KnownNetworks.Add(
+                            new IPNetwork(IPAddress.Parse("::ffff:10.12.0.0"), 16)
+                        );
+                    }
+
                     builder.UseDefaultApiMiddleware(
                         container,
                         environment,
                         diagnosticListener,
-                        useAuthentication: false
+                        useAuthentication: false,
+                        forwardedHeadersOptions: forwardedHeadersOptions
                     );
 
                     next(builder);
