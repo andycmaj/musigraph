@@ -16,6 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Condition="$(Configuration) == 'Debug'" Include="../../../../github/andycmaj/AspNetCore.ApplicationBlocks/src/AspNetCore.ApplicationBlocks.FrontEnd/AspNetCore.ApplicationBlocks.FrontEnd.csproj"/>
-    <PackageReference Condition="$(Configuration) == 'Release'" Include="AspNetCore.ApplicationBlocks.FrontEnd" Version="1.0.3-t181218023829"/>
+    <PackageReference Condition="$(Configuration) == 'Release'" Include="AspNetCore.ApplicationBlocks.FrontEnd" Version="1.0.3-t181218034029"/>
   </ItemGroup>
 </Project>
