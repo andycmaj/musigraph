@@ -35,7 +35,7 @@ const CrumbsContainer = styled.div`
   ${media.phone`
     flex-flow: column;
     align-items: unset;
-  `}
+  `};
 `;
 
 const SelectContainer = styled(components.SelectContainer)`
@@ -76,13 +76,16 @@ const renderAction = ({ type, ...action }) => (
 const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
     {data.type === 'Artist' ? <ArtistIcon /> : <ReleaseIcon />}
-    {children}
+    {data.name}
   </components.SingleValue>
 ));
 
 const hidden = _ => ({
   display: 'none',
 });
+
+const getNodeLabel = ({ name, subtitle }) =>
+  name + (!!subtitle ? ` (${subtitle})` : '');
 
 const Crumb = ({
   menuIsOpen,
@@ -124,7 +127,7 @@ const Crumb = ({
       isLoading={loading || actionsLoading}
       options={nodes}
       filterOption={() => true}
-      getOptionLabel={node => node.name}
+      getOptionLabel={getNodeLabel}
       getOptionValue={node => node}
       closeMenuOnSelect={true}
       onChange={createNodeChangeHandler(crumb)}
@@ -133,11 +136,9 @@ const Crumb = ({
   );
 };
 
-const PureCrumb = onlyUpdateForKeys([
-  'id',
-  'menuIsOpen',
-  'actionsLoading',
-])(Crumb);
+const PureCrumb = onlyUpdateForKeys(['id', 'menuIsOpen', 'actionsLoading'])(
+  Crumb
+);
 
 export default ({
   path: { initialCrumbLoading, crumbs },
@@ -166,17 +167,17 @@ export default ({
 
             return (
               <React.Fragment key={crumbId}>
-              <ControlContainer>
-                <PureCrumb
-                  id={crumbId}
-                  crumb={crumb}
-                  actionsLoading={actionsLoading}
-                  index={index}
-                  createNodeChangeHandler={createNodeChangeHandler}
-                  setActiveCrumbIndex={setActiveCrumbIndex}
-                  menuIsOpen={menuIsOpen}
-                />
-                {actions && actions.map(renderAction)}
+                <ControlContainer>
+                  <PureCrumb
+                    id={crumbId}
+                    crumb={crumb}
+                    actionsLoading={actionsLoading}
+                    index={index}
+                    createNodeChangeHandler={createNodeChangeHandler}
+                    setActiveCrumbIndex={setActiveCrumbIndex}
+                    menuIsOpen={menuIsOpen}
+                  />
+                  {actions && actions.map(renderAction)}
                 </ControlContainer>
                 {!isLastCrumb ? <CrumbSeparator /> : null}
               </React.Fragment>

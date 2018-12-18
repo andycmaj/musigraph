@@ -13,5 +13,6 @@ namespace Api.Models
         public string ThumbnailUrl { get; set; }
         public string InfoUrl { get; set; }
         public string DataSource { get; set; }
+        public string Subtitle => Role;
     }
 }

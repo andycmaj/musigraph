@@ -8,6 +8,7 @@ namespace Api.Models
         NodeType Type { get; }
         string Id { get; }
         string Name { get; }
+        string Subtitle { get; }
         string ThumbnailUrl { get; }
         string InfoUrl { get; }
         IReadOnlyList<INode> AdjacentNodes { get; }
