@@ -6,6 +6,7 @@ import {
   CHANGE_NODE_VALUE,
   GET_CRUMB_ACTIONS,
 } from '../actions/path';
+import { SET_SEARCH_TYPE } from '../actions/search';
 
 const defaultState = {
   crumbs: [],
@@ -74,6 +75,7 @@ const setCrumbActionsLoaded = (crumbs, changedCrumb, actions) =>
 const crumbsReducer = (state = defaultState, { type, payload, error }) => {
   switch (type) {
     case CLEAR_PATH:
+    case SET_SEARCH_TYPE:
       return {
         ...state,
         crumbs: [],

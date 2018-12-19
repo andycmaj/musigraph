@@ -1,13 +1,13 @@
-import { compose, withHandlers, withState } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 import debounceHandler from '@hocs/debounce-handler';
 import { doSearch } from '../../actions/search';
-import { resetPath, clearPath } from '../../actions/path';
+import { resetPath } from '../../actions/path';
 
 import Component from './component';
 
 const mapStateToProps = ({ search }) => ({ search });
-const mapDispatchToProps = { doSearch, resetPath, clearPath };
+const mapDispatchToProps = { doSearch, resetPath };
 
 export default compose(
   connect(
@@ -15,7 +15,6 @@ export default compose(
     mapDispatchToProps
   ),
   debounceHandler('doSearch', 300),
-  withState('searchType', 'setSearchType', 'artist'),
   withHandlers({
     handleChange: props => (value, { action }) => {
       if (action === 'select-option') {
@@ -24,12 +23,8 @@ export default compose(
     },
     handleInputChange: props => (value, { action }) => {
       if (action === 'input-change') {
-        props.doSearch(props.searchType, value);
+        props.doSearch(props.search.searchType, value);
       }
-    },
-    handleSearchTypeChange: props => value => {
-      props.setSearchType(value);
-      props.clearPath();
     },
   })
 )(Component);

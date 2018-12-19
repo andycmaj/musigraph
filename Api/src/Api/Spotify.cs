@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AspNet.Security.OAuth.Spotify;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Polly;
 using SerilogEventLogger;
-using SimpleInjector;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
@@ -49,7 +49,7 @@ namespace Api
                     });
 
                     // access token expired
-                    if (retryCount == 1)
+                    if (retryCount == 1 && result.Result.StatusCode() == HttpStatusCode.Unauthorized)
                     {
                         await RefreshAccessToken();
                         spotify.AccessToken =
@@ -101,6 +101,8 @@ namespace Api
                 authProperties.UpdateTokenValue("expires_at", expiresAt.ToString("o", CultureInfo.InvariantCulture));
             }
             await context.SignInAsync(user, authProperties);
+
+            logger.InfoEvent("RefreshedSpotifyAuth", new { user.Identity.Name });
 
             await Task.CompletedTask;
         }

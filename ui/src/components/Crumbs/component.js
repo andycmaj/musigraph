@@ -58,7 +58,7 @@ const ControlContainer = styled.div`
   }
 `;
 
-const actions = {
+const actionComponents = {
   Audio: action => <AudioAction action={action} />,
   ExternalLink: ({ label, url }) => (
     <Tooltip title={label}>
@@ -68,10 +68,6 @@ const actions = {
     </Tooltip>
   ),
 };
-
-const renderAction = ({ type, ...action }) => (
-  <span key={action.url}>{actions[type](action)}</span>
-);
 
 const SingleValue = StyledItemWithThumbnail(({ data, children, ...props }) => (
   <components.SingleValue {...props}>
@@ -187,7 +183,10 @@ export default ({
                     setActiveCrumbIndex={setActiveCrumbIndex}
                     menuIsOpen={menuIsOpen}
                   />
-                  {actions && actions.map(renderAction)}
+                  {actions &&
+                    actions.map(({ type, ...action }) => (
+                      <span key={action.url}>{actionComponents[type](action)}</span>
+                    ))}
                 </ControlContainer>
                 {!isLastCrumb ? <CrumbSeparator /> : null}
               </React.Fragment>

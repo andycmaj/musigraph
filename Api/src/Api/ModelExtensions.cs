@@ -9,7 +9,7 @@ namespace Api
                 ? release.main_release
                 : release.id).ToString();
 
-        public static string GetReleaseId(this DiscogsRelease release) => 
+        public static string GetReleaseId(this DiscogsRelease release) =>
             release.id.ToString();
 
         public static string GetInfoUrl(this DiscogsArtistRelease release) =>
