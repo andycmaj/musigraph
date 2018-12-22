@@ -8,7 +8,7 @@ import AppContainer from './AppContainer';
 const rootEl = document.getElementById('root');
 
 render(
-  <Provider store={configureStore}>
+  <Provider store={configureStore()}>
     <AppContainer />
   </Provider>,
   rootEl

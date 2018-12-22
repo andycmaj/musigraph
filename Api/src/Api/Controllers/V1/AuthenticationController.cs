@@ -4,7 +4,7 @@ using AspNet.Security.OAuth.Spotify;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace Api.V1.Controllers
 {
     [Route("api/v1/[controller]")]
     public class AuthenticationController : Controller
@@ -17,17 +17,11 @@ namespace Api.Controllers
             // Note: the authenticationScheme parameter must match the value configured in Startup.cs
             return Challenge(
                 new AuthenticationProperties {
-                    RedirectUri = "https://musigraph.app",
+                    RedirectUri = "https://musigraph.app?linked=spotify",
                     AllowRefresh = true,
                 },
                 SpotifyAuthenticationDefaults.AuthenticationScheme
             );
-        }
-
-        [HttpGet("callback/spotify")]
-        public async Task<IActionResult> SpotifyCallback(string code)
-        {
-            throw new NotImplementedException();
         }
     }
 }
