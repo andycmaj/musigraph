@@ -14,5 +14,7 @@ namespace Api
         string SpotifyClientSecret { get; }
 
         string CookieDomain { get; }
+
+        string OAuthReturnUrl { get; }
     }
 }

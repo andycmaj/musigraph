@@ -1,15 +1,15 @@
 import { css } from 'styled-components';
+import { mapObjIndexed } from 'ramda';
 
-const screenWidths = {
+const breakPoints = {
   phone: 500,
 };
 
-// https://www.styled-components.com/docs/advanced#media-templates
-export default Object.keys(screenWidths).reduce((acc, label) => {
-  acc[label] = (...args) => css`
-    @media (max-width: ${screenWidths[label]}px) {
+export default mapObjIndexed(
+  width => (...args) => css`
+    @media (max-width: ${width}px) {
       ${css(...args)};
     }
-  `;
-  return acc;
-}, {});
+  `,
+  breakPoints
+);

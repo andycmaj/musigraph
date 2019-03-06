@@ -1,5 +1,3 @@
-'use strict'
-
 import { connect } from 'react-redux'
 import Audio from './Audio'
 import { audioEnded, audioRegister, audioPaused, audioPlaying, audioUnregister, audioCommand } from './actions'

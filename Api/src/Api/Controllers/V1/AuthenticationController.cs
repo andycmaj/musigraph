@@ -9,6 +9,13 @@ namespace Api.V1.Controllers
     [Route("api/v1/[controller]")]
     public class AuthenticationController : Controller
     {
+        private readonly IAppConfig appConfig;
+
+        public AuthenticationController(IAppConfig appConfig)
+        {
+            this.appConfig = appConfig;
+        }
+
         [HttpGet("signin/spotify")]
         public async Task<IActionResult> SpotifySignIn()
         {
@@ -17,7 +24,7 @@ namespace Api.V1.Controllers
             // Note: the authenticationScheme parameter must match the value configured in Startup.cs
             return Challenge(
                 new AuthenticationProperties {
-                    RedirectUri = "https://musigraph.app?linked=spotify",
+                    RedirectUri = $"{appConfig.OAuthReturnUrl}?linked=spotify",
                     AllowRefresh = true,
                 },
                 SpotifyAuthenticationDefaults.AuthenticationScheme

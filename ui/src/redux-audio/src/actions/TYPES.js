@@ -1,5 +1,3 @@
-'use strict'
-
 const PREFIX = '@@redux-audio/'
 
 export const AUDIO_PLAY = PREFIX + 'PLAY'

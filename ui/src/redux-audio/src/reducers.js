@@ -1,5 +1,3 @@
-'use strict'
-
 import { Map } from 'immutable'
 import { AUDIO_ENDED, AUDIO_PLAY, AUDIO_PAUSE, AUDIO_PLAYING, AUDIO_PAUSED,
          AUDIO_REGISTER, AUDIO_UNREGISTER, AUDIO_SRC, AUDIO_COMMAND } from './actions/TYPES'

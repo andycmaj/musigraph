@@ -8,3 +8,4 @@ data:
   ASPNETCORE_ENVIRONMENT: {{ .Values.application.environment }}
   APPLICATION__VERSION: {{ .Values.application.version }}
   COOKIEDOMAIN: {{ .Values.cookieDomain }}
+  OAUTHRETURNURL: {{ .Values.oAuthReturnUrl }}

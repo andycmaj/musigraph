@@ -13,6 +13,6 @@ export default () =>
     rootReducer,
     browserPersistedState,
     composeWithDevTools(
-      applyMiddleware([localStorageSaver, apiMiddleware, thunk])
+      applyMiddleware(localStorageSaver, apiMiddleware, thunk)
     )
   );

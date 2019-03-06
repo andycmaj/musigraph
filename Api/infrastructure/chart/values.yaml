@@ -16,6 +16,7 @@ image:
   pullPolicy: Always
 
 cookieDomain: musigraph.app
+oAuthReturnUrl: https://musigraph.app
 
 discogs:
   apiToken: ''

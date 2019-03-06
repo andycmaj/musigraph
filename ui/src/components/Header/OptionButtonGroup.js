@@ -12,7 +12,7 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: center;
   box-sizing: border-box;
-  margin: 20px 0;
+  margin: 0 0 10px 0;
 `;
 
 const neon = keyframes`

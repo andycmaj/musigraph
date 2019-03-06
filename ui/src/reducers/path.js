@@ -3,13 +3,16 @@ import { findIndex } from 'ramda';
 import {
   RESET_PATH,
   CLEAR_PATH,
-  CHANGE_NODE_VALUE,
-  GET_CRUMB_ACTIONS,
+  CHANGE_SELECTED_NODE,
+  GET_CARD_ACTIONS,
+  UPDATE_ACTIVE_CARD,
 } from '../actions/path';
 import { SET_SEARCH_TYPE } from '../actions/search';
 
 const defaultState = {
-  crumbs: [],
+  cards: [],
+  initialCardLoading: false,
+  activeCardIndex: 0,
 };
 
 const {
@@ -18,104 +21,113 @@ const {
 } = createApiActionTypes(RESET_PATH);
 
 const {
-  request: { type: getCrumbActionsRequest },
-  success: { type: getCrumbActionsSuccess },
-} = createApiActionTypes(GET_CRUMB_ACTIONS);
+  request: { type: getCardActionsRequest },
+  success: { type: getCardActionsSuccess },
+} = createApiActionTypes(GET_CARD_ACTIONS);
 
-const changeNodeActions = createApiActionTypes(CHANGE_NODE_VALUE);
+const changeSelectedNode = createApiActionTypes(CHANGE_SELECTED_NODE);
 
-const replaceTailCrumbs = (crumbs, changedCrumb, newCrumb) => {
-  const index = findIndex(crumb => crumb.source.id === changedCrumb.source.id)(
-    crumbs
+const replaceTailCards = (cards, changedCard, newCard) => {
+  const index = findIndex(card => card.source.id === changedCard.source.id)(
+    cards
   );
   return [
-    ...crumbs.slice(0, index),
+    ...cards.slice(0, index),
     {
-      ...crumbs[index],
+      ...cards[index],
       loading: false,
     },
-    newCrumb,
+    newCard,
   ];
 };
 
-const toggleCrumbLoading = (crumbs, changedCrumb, loading) =>
-  crumbs.map(
-    crumb =>
-      crumb.source.id === changedCrumb.source.id
-        ? {
-            ...crumb,
-            loading,
-          }
-        : crumb
+const toggleCardLoading = (cards, changedCard, loading) =>
+  cards.map(card =>
+    card.source.id === changedCard.source.id
+      ? {
+          ...card,
+          loading,
+        }
+      : card
   );
 
-const setCrumbActionsLoading = (crumbs, changedCrumb) =>
-  crumbs.map(
-    crumb =>
-      crumb.source.id === changedCrumb.source.id
-        ? {
-            ...crumb,
-            actionsLoading: true,
-          }
-        : crumb
+const setCardActionsLoading = (cards, changedCard) =>
+  cards.map(card =>
+    card.source.id === changedCard.source.id
+      ? {
+          ...card,
+          actionsLoading: true,
+        }
+      : card
   );
 
-const setCrumbActionsLoaded = (crumbs, changedCrumb, actions) =>
-  crumbs.map(
-    crumb =>
-      crumb.source.id === changedCrumb.source.id
-        ? {
-            ...crumb,
-            actionsLoading: false,
-            actions,
-          }
-        : crumb
+const setCardActionsLoaded = (cards, changedCard, actions) =>
+  cards.map(card =>
+    card.source.id === changedCard.source.id
+      ? {
+          ...card,
+          actionsLoading: false,
+          actions,
+        }
+      : card
   );
 
-const crumbsReducer = (state = defaultState, { type, payload, error }) => {
+export const getActiveCard = ({ cards, activeCardIndex }) => {
+  return cards.length ? cards[activeCardIndex] : {};
+}
+
+const cardsReducer = (state = defaultState, { type, payload, error }) => {
   switch (type) {
     case CLEAR_PATH:
     case SET_SEARCH_TYPE:
       return {
         ...state,
-        crumbs: [],
+        cards: [],
       };
     case resetPathRequest:
       return {
         ...state,
-        initialCrumbLoading: true,
+        initialCardLoading: true,
+      };
+    case UPDATE_ACTIVE_CARD:
+      return {
+        ...state,
+        activeCardIndex: payload.activeCardIndex,
       };
     case resetPathSuccess:
       const { source, nodes } = payload;
       return {
-        crumbs: [{ source, nodes }],
+        cards: [{ source, nodes }],
+        activeCardIndex: 0,
       };
-    case changeNodeActions.request.type: {
-      const { changedCrumb } = payload;
+    case changeSelectedNode.request.type: {
+      const { changedCard } = payload;
       return {
         ...state,
-        crumbs: toggleCrumbLoading(state.crumbs, changedCrumb, true),
-      };
-    }
-    case changeNodeActions.success.type: {
-      const { changedCrumb, newCrumb } = payload;
-      return {
-        ...state,
-        crumbs: replaceTailCrumbs(state.crumbs, changedCrumb, newCrumb),
+        cards: toggleCardLoading(state.cards, changedCard, true),
       };
     }
-    case getCrumbActionsRequest: {
-      const { changedCrumb } = payload;
+    case changeSelectedNode.success.type: {
+      const { changedCard, newCard } = payload;
+      const cards = replaceTailCards(state.cards, changedCard, newCard);
       return {
         ...state,
-        crumbs: setCrumbActionsLoading(state.crumbs, changedCrumb),
+        cards,
+        activeCardIndex: cards.length - 1,
       };
     }
-    case getCrumbActionsSuccess: {
-      const { changedCrumb, actions } = payload;
+    case getCardActionsRequest: {
+      const { changedCard } = payload;
       return {
         ...state,
-        crumbs: setCrumbActionsLoaded(state.crumbs, changedCrumb, actions),
+        cards: setCardActionsLoading(state.cards, changedCard),
+      };
+    }
+    case getCardActionsSuccess: {
+      const { changedCard, actions } = payload;
+      return {
+        ...state,
+        cards: setCardActionsLoaded(state.cards, changedCard, actions),
       };
     }
     default:
@@ -123,4 +135,4 @@ const crumbsReducer = (state = defaultState, { type, payload, error }) => {
   }
 };
 
-export default crumbsReducer;
+export default cardsReducer;

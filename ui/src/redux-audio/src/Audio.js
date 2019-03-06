@@ -1,9 +1,9 @@
-'use strict'
-
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
+import createClass from 'create-react-class';
 import ReactDOM from 'react-dom'
 
-const Audio = React.createClass({
+const Audio = createClass({
   play () {
     ReactDOM.findDOMNode(this).play()
   },

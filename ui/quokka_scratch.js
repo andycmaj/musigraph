@@ -14,10 +14,10 @@ import {
   omit
 } from 'ramda';
 
-const crumbs = [{ source: 1, options: [1, 2, 3], loading: true }];
-const newCrumb = {
-  source: crumbs[0].source,
-  options: crumbs[0].options,
+const Cards = [{ source: 1, options: [1, 2, 3], loading: true }];
+const newCard = {
+  source: Cards[0].source,
+  options: Cards[0].options,
   loading: false
 };
 
@@ -33,4 +33,4 @@ const replaceTailNodes = (pathNodes, changedNode) => {
   ];
 };
 
-console.log(replaceTailNodes(crumbs, newCrumb));
+console.log(replaceTailNodes(Cards, newCard));

@@ -10,7 +10,7 @@ import StyledAction from './StyledAction';
 const Component = ({ action: { label, url }, audio, playOrPausePreview }) => {
   const state = !!audio && audio.get('state');
   return (
-    <div>
+    <>
       {audio && (
         <Tooltip title={`${state === 'playing' ? 'pause' : 'play'} ${label}`}>
           <StyledAction onClick={playOrPausePreview}>
@@ -19,7 +19,7 @@ const Component = ({ action: { label, url }, audio, playOrPausePreview }) => {
         </Tooltip>
       )}
       <Audio src={url} uniqueId={url} />
-    </div>
+    </>
   );
 };
 

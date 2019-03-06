@@ -23,5 +23,7 @@ namespace Api
         public string SpotifyClientSecret => GetString("Spotify:ClientSecret");
 
         public string CookieDomain => GetString("CookieDomain", "localhost");
+
+        public string OAuthReturnUrl => GetString("OAuthReturnUrl", "http://localhost:3000");
     }
 }
