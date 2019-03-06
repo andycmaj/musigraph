@@ -1,30 +1,24 @@
 const rewireReactHotLoader = require('react-app-rewire-hot-loader');
-const { compose, injectBabelPlugin, paths } = require('react-app-rewired');
-const rewireAliases = require('react-app-rewire-aliases');
+const { paths } = require('react-app-rewired');
+const { addBabelPlugin, addWebpackAlias, override } = require('customize-cra');
 const path = require('path');
 
-const createRewire = plugin => (config, env) =>
-  injectBabelPlugin(plugin, config);
+console.log(
+  'redux-audio',
+  path.resolve(__dirname, `${paths.appSrc}/redux-audio/src`)
+);
 
-const alias = rewireAliases.aliasesOptions({
+const aliases = addWebpackAlias({
   // 'react-dom': '@hot-loader/react-dom',
   'redux-audio': path.resolve(__dirname, `${paths.appSrc}/redux-audio/src`),
 });
 
+const plugins = addBabelPlugin(
+  '@quickbaseoss/babel-plugin-styled-components-css-namespace',
+  'styled-components'
+);
+
 module.exports =
   process.env.NODE_ENV === 'production'
-    ? compose(
-        alias,
-        createRewire(
-          '@quickbaseoss/babel-plugin-styled-components-css-namespace'
-        ),
-        createRewire('styled-components')
-      )
-    : compose(
-        rewireReactHotLoader,
-        alias,
-        createRewire(
-          '@quickbaseoss/babel-plugin-styled-components-css-namespace'
-        ),
-        createRewire('styled-components')
-      );
+    ? override(aliases, plugins)
+    : override(rewireReactHotLoader, aliases, plugins);
