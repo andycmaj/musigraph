@@ -1,32 +1,20 @@
-version: 2
+version: 2.1
+
+orbs:
+  docker: circleci/docker@0.5.13
 
 jobs:
-  build_api_image:
-    docker:
-      - image: docker:18.06.1-ce-git
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: build and push docker image
-          command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t andycunn/musigraph-api:$CIRCLE_SHA1 ./Api/src/Api
-            docker push andycunn/musigraph-api:$CIRCLE_SHA1
   deploy_api:
+    working_directory: ~/repo
     docker:
-      - image: andycunn/helm-deploy:latest
+      - image: andycunn/local-tiller-deployments:latest
+        environment:
+          DIGITALOCEAN_ACCESS_TOKEN: $DIGITALOCEAN_ACCESS_TOKEN
     steps:
       - checkout
       - run:
-          name: configure kubectl with gcloud
-          command: |
-            echo $GCLOUD_SERVICE_KEY > /tmp/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=/tmp/gcloud-service-key.json
-            gcloud --quiet config set project andy-sandbox
-            gcloud --quiet config set compute/zone us-west1-a
-            gcloud --quiet container clusters get-credentials dev
+          name: configure kubectl using doctl
+          command: doctl kubernetes cluster kubeconfig save $CLUSTER_NAME
       - run:
           name: deploy helm release
           command: |
@@ -42,15 +30,17 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build_api_image:
-          context: dotnet
+      - docker/publish:
+          context: dockerhub
+          path: ./Api/src/Api
+          image: andycunn/musigraph-api
           filters:
             branches:
               only: master
       - deploy_api:
           context: kubernetes
+          requires:
+            - docker/publish
           filters:
             branches:
               only: master
-          requires:
-            - build_api_image
