@@ -5,10 +5,7 @@ metadata:
   name: {{ template "api.fullname" . }}
   annotations:
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: 'true'
-    certmanager.k8s.io/acme-challenge-type: 'dns01'
-    certmanager.k8s.io/acme-dns01-provider: 'prod-clouddns'
-    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod'
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
   - host: {{ .Values.ingress.domain }}
@@ -20,4 +17,4 @@ spec:
   tls:
   - hosts:
       - {{ .Values.ingress.domain }}
-    secretName: musigraph-api-tls
+    secretName: letsencrypt-prod
