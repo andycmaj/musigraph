@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "name": "musigraph",
+  "env": {
+    "DISCOGS_APITOKEN": "@discogs-api-token",
+    "SPOTIFY_CLIENTID": "@spotify-client-id",
+    "SPOTIFY_CLIENTSECRET": "@spotify-client-secret",
+    "SPOTIFY_CALLBACK": "https://musigraph-next.andycunn.now.sh/api/auth/callback",
+    "DATA_SOURCE": "Discogs",
+    "REACT_APP_API_URL": "/api"
+  }
+}

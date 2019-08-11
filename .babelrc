@@ -1,0 +1,25 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["."],
+        "alias": {
+          "redux-audio": "./redux-audio/src",
+          "lib": "./lib"
+        }
+      }
+    ],
+    [
+      "styled-components",
+      {
+        "ssr": true,
+        "displayName": true,
+        "minify": false,
+        "transpileTemplateLiterals": true
+      }
+    ],
+    "@babel/proposal-export-default-from"
+  ]
+}
