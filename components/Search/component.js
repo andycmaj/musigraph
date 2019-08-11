@@ -37,6 +37,12 @@ export default ({
         ...provided,
         zIndex: 100,
       }),
+      control: provided => ({
+        ...provided,
+        border: 'none',
+        borderBottom: 'solid',
+        borderRadius: 0,
+      }),
     }}
     value={selectedResult}
     isLoading={loading}
