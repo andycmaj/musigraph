@@ -211,8 +211,6 @@ const getReleases = async (artistId: number): Promise<AdjacentNodesResult> => {
 const getArtists = async (releaseId: number): Promise<AdjacentNodesResult> => {
   const release = await discogsClient.getRelease(releaseId);
 
-  console.log(release);
-
   // TODO: types for artist/discogsResponse
 
   const artists = sortBy(

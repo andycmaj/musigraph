@@ -19,7 +19,6 @@ const microAuthSpotify = ({
   };
 
   return fn => async (req, res, ...args) => {
-    console.log('auth spotify');
     const { pathname, query } = url.parse(req.url);
 
     if (pathname === path) {
@@ -87,8 +86,6 @@ const microAuthSpotify = ({
             Authorization: `Bearer ${accessToken}`,
           },
         });
-
-        console.log('user', user);
 
         const result = {
           provider,

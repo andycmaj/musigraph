@@ -1,7 +1,5 @@
 import withSpotifyOAuth from 'lib/withSpotifyOAuth';
 
-const handler = async () => {
-  console.log('auth handler');
-};
+const handler = async () => {};
 
 export default withSpotifyOAuth(handler);

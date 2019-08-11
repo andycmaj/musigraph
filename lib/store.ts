@@ -30,8 +30,6 @@ const makeStore: MakeStore = (initialState, { query, isServer }) => {
     middleware.unshift(localStorageSaver);
     // state = load({ states: ['user'], preloadedState: initialState });
     state = load({ states: ['user'] });
-
-    console.log('loaded', state);
   }
 
   return createStore(

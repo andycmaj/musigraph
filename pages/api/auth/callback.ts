@@ -31,8 +31,6 @@ const cookie = (
 // const withCookie = handler => (request, response) => {};
 
 const handler = (req: NextApiRequest, res: NextApiResponse, auth: any) => {
-  console.log('auth callback', auth);
-
   if (!auth) {
     return send(res, 404, 'Not Found');
   }
