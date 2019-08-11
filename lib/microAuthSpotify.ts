@@ -37,7 +37,7 @@ const microAuthSpotify = ({
     const callbackPath = url.parse(callbackUrl).pathname;
     if (pathname === callbackPath) {
       try {
-        const { state, code } = querystring.parse(query);
+        const { code } = querystring.parse(query);
 
         // TODO: next js isn't appropriate for in-memory
         // state, since all handlers can be run as lambdas
