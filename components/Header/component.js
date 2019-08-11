@@ -1,6 +1,5 @@
 import React from 'react';
 import OptionButtonGroup from './OptionButtonGroup';
-import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spotifyLogo from '../spotify_icon.png';
 import Search from '../Search';
@@ -8,27 +7,9 @@ import AudioAction from '../Cards/AudioAction';
 import GoToIcon from '@material-ui/icons/OpenInBrowser';
 import Tooltip from '@material-ui/core/Tooltip';
 import StyledAction from '../Cards/StyledAction';
-import swallowingStyled from '../../lib/swallowingStyled';
+import SpotifyIndicator from './SpotifyIndicator';
 
 const searchTypes = ['artist', 'release'];
-
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const SpotifyIndicator = styled(({ isSpotifyLinked, ...rest }) => (
-//   <IconButton {...rest} />
-// ))`
-const SpotifyIndicator = swallowingStyled(IconButton, {
-  swallowProps: ['isSpotifyLinked'],
-})`
-  position: absolute !important;
-  top: 5px;
-  right: 5px;
-
-  .logo {
-    filter: ${props => (props.isSpotifyLinked ? 'none' : 'grayscale(100%)')};
-    height: 20px;
-    width: 20px;
-  }
-`;
 
 const CardTitle = styled.h3`
   padding: 0;
