@@ -15,8 +15,8 @@
     "target": "esnext",
     "baseUrl": ".",
     "paths": {
-      "*": ["*"],
-      "lib/*": ["lib/*"]
+      "lib/*": ["lib/*"],
+      "*": ["*"]
     },
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,

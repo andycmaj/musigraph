@@ -5027,7 +5027,7 @@ next-server@9.0.3:
     styled-jsx "3.2.1"
     url "0.11.0"
 
-next@latest:
+next@9.0.3:
   version "9.0.3"
   resolved "https://registry.yarnpkg.com/next/-/next-9.0.3.tgz#5c7b6f8dd142de907456a7c1df41e839ad16804a"
   integrity sha512-Du0bGMdQDFq0itPm+OyaN/cKW20p9h6ZoEXnwIcop28L06pB45KcLEDdZgDZ75rk36UHiuwpRnjLMVzcbEqhRg==
