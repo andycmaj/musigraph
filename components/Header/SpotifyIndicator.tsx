@@ -1,18 +1,9 @@
-import React from 'react';
 import { IconButton } from '@material-ui/core';
-// import swallowingStyled from '../../lib/swallowingStyled';
-import styled from 'styled-components';
+import swallowingStyled from '../../lib/swallowingStyled';
 
-// / const SpotifyIndicator = swallowingStyled(IconButton, {
-//   swallowProps: ['isSpotifyLinked'],
-// })`
-// // eslint-disable-next-line @typescript-eslint/no-unused-va
-const Unstyled = ({ isSpotifyLinked, ...rest }) => {
-  console.log('isSpotLinked', isSpotifyLinked);
-  return <IconButton {...rest} />;
-};
-
-const SpotifyIndicator = styled(Unstyled)`
+const SpotifyIndicator = swallowingStyled(IconButton, {
+  swallowProps: ['isSpotifyLinked'],
+})`
   position: absolute !important;
   top: 5px;
   right: 5px;

@@ -41,7 +41,7 @@ export default (accessToken: string, refreshToken?: string): Spotify => {
     }
 
     try {
-      let response = await apiCall();
+      const response = await apiCall();
 
       if (response.statusCode === 401) {
         // Refresh token
@@ -91,7 +91,7 @@ export default (accessToken: string, refreshToken?: string): Spotify => {
 
     getAlbumTracks: async (
       albumId: string,
-      limit: number = 10
+      limit = 10
     ): Promise<SpotifyApi.TrackObjectSimplified[]> => {
       const response = await withTokenRefresh(() =>
         client.getAlbumTracks(albumId.toString(), { limit })
