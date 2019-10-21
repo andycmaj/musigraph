@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Store, AnyAction, Action } from 'redux';
 import { NextComponentType, NextPageContext } from 'next';
+import cookies from 'next-cookies';
 
 const defaultConfig: Config = {
   storeKey: '__NEXT_REDUX_STORE__',
@@ -50,8 +51,18 @@ export default (makeStore: MakeStore, config?: Config) => {
         /* istanbul ignore next */
         if (!appCtx.ctx) throw new Error('No page context');
 
+        const { token } = cookies(appCtx.ctx);
+        const {
+          result: { provider },
+        } = JSON.parse(token);
+        const initialState = {
+          user: {
+            isUsingSpotify: provider === 'spotify',
+          },
+        };
         const store = initStore({
           ctx: appCtx.ctx,
+          initialState,
         });
 
         if (config.debug)

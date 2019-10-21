@@ -3,7 +3,6 @@ import { createMiddleware } from 'isomorphic-redux-api-middleware';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction';
-import { load, save } from 'redux-localstorage-simple';
 import rootReducer from '../reducers';
 import { MakeStore } from 'lib/withRedux';
 
@@ -26,10 +25,10 @@ const makeStore: MakeStore = (initialState, { query, isServer }) => {
       };
     }
   } else if (!isServer) {
-    const localStorageSaver = save({ states: ['user'] });
-    middleware.unshift(localStorageSaver);
-    // state = load({ states: ['user'], preloadedState: initialState });
-    state = load({ states: ['user'] });
+    // const localStorageSaver = save({ states: ['user'] });
+    // middleware.unshift(localStorageSaver);
+    // // state = load({ states: ['user'], preloadedState: initialState });
+    // state = load({ states: ['user'] });
   }
 
   return createStore(
