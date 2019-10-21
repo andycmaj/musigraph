@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
-import { Audio, actions } from 'redux-audio';
+import { Audio, actions } from '../../redux-audio/src';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import Tooltip from '@material-ui/core/Tooltip';

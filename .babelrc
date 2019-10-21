@@ -6,7 +6,6 @@
       {
         "root": ["."],
         "alias": {
-          "redux-audio": "./redux-audio/src",
           "lib": "./lib"
         }
       }
