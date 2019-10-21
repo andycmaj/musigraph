@@ -52,14 +52,20 @@ export default (makeStore: MakeStore, config?: Config) => {
         if (!appCtx.ctx) throw new Error('No page context');
 
         const { token } = cookies(appCtx.ctx);
-        const {
-          result: { provider },
-        } = JSON.parse(token);
-        const initialState = {
-          user: {
-            isUsingSpotify: provider === 'spotify',
-          },
-        };
+
+        let initialState = {};
+        if (token) {
+          try {
+            const {
+              result: { provider },
+            } = JSON.parse(token);
+            initialState = {
+              user: {
+                isUsingSpotify: provider === 'spotify',
+              },
+            };
+          } catch {}
+        }
         const store = initStore({
           ctx: appCtx.ctx,
           initialState,
