@@ -25,6 +25,10 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
   ul {
     padding: 0;
   }
@@ -33,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
 const Container = styled.section`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   padding: 10px;
 `;
 
@@ -43,7 +47,7 @@ const Header = styled(UnstyledHeader)`
 
 const Content = styled(Cards)`
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   min-height: 0px;
 `;
 
