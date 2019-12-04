@@ -5,7 +5,7 @@ import cookies from 'next-cookies';
 
 const defaultConfig: Config = {
   storeKey: '__NEXT_REDUX_STORE__',
-  debug: false,
+  debug: true,
   serializeState: state => state,
   deserializeState: state => state,
 };
