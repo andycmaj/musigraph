@@ -43,7 +43,11 @@ export default (accessToken: string, refreshToken?: string): Spotify => {
     try {
       const response = await apiCall();
 
-      if (response.statusCode === 401) {
+      return response;
+    } catch (e) {
+      console.log('error making spotify call', JSON.stringify(e));
+
+      if (e.statusCode === 401) {
         // Refresh token
         console.log('refreshing accesstoken');
         const response = await client.refreshAccessToken();
@@ -56,9 +60,6 @@ export default (accessToken: string, refreshToken?: string): Spotify => {
         return withTokenRefresh(apiCall, remainingTries - 1);
       }
 
-      return response;
-    } catch (e) {
-      console.log('error making spotify call', JSON.stringify(e));
       throw e;
     }
   }

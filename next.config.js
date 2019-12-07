@@ -11,12 +11,7 @@ module.exports = withPlugins([withCss, withFonts, withImages], {
       config.module.rules.push({
         test: /\.(jsx?|gql|graphql|tsx?)$/,
         loader: 'eslint-loader',
-        exclude: [
-          '/node_modules/',
-          '/.next/',
-          '/helper_scripts/',
-          '/redux-audio/',
-        ],
+        exclude: ['/node_modules/', '/.next/', '/helper_scripts/'],
         enforce: 'pre',
       });
     }
